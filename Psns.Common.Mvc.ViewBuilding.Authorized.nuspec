@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Psns.Common.Mvc.ViewBuilding.Authorized</id>
+    <title>Psns.Common.Mvc.ViewBuilding.Authorized</title>
+    <authors>Jeff Purcell</authors>
+    <owners>109.14</owners>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Adds an authorization layer to ViewBuilding so that only authorized content is displayed</description>
+    <projectUrl>https://github.com/PSNS-IMF/mvc-viewbuilding-authorized</projectUrl>
+    <licenseUrl>https://github.com/PSNS-IMF/mvc-viewbuilding-authorized/blob/master/LICENSE.md</licenseUrl>
+    <releaseNotes>
+      ## 1.0.0.0
+      ### Features
+      * Initial release
+    </releaseNotes>
+    <version>$version$</version>
+    <tags>PSNS mvc4 mvc5 asp.net mvc AspNetMvc model automation crud views viewbuilding authorization</tags>
+    <dependencies>
+      <dependency id="Psns.Common.Mvc.ViewBuilding" version="" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="Psns.Common.Mvc.ViewBuilding.Authorized\bin\$configuration$\Psns.Common.Mvc.ViewBuilding.Authorized.*" target="lib\net45\" />
+    <file src="Psns.Common.Mvc.ViewBuilding.Authorized\bin\$configuration$\net40\Psns.Common.Mvc.ViewBuilding.Authorized.*" target="lib\net40\" />
+  </files>
+</package>
