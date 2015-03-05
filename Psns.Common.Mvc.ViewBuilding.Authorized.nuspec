@@ -17,7 +17,7 @@
     <version>$version$</version>
     <tags>PSNS mvc4 mvc5 asp.net mvc AspNetMvc model automation crud views viewbuilding authorization</tags>
     <dependencies>
-      <dependency id="Psns.Common.Mvc.ViewBuilding" version="" />
+      <dependency id="Psns.Common.Mvc.ViewBuilding" version="3.0.0" />
     </dependencies>
   </metadata>
   <files>

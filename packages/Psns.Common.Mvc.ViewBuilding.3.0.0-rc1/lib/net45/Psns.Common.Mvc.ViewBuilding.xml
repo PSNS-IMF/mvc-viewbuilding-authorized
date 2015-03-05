@@ -1,0 +1,267 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Psns.Common.Mvc.ViewBuilding</name>
+    </assembly>
+    <members>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.Adapters.RequestContextAdapter">
+            <summary>
+            An adapter for the HttpContext.Current.Request.RequestContext to assist with testing
+            </summary>
+        </member>
+        <member name="P:Psns.Common.Mvc.ViewBuilding.Adapters.RequestContextAdapter.Context">
+            <summary>
+            Unless explicitly set, HttpContext.Current.Request.RequestContext is returned
+            </summary>
+        </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.Attributes.InputPropertyType">
+            <summary>
+            Represents types of properties that will be displayed on an update view
+            </summary>
+        </member>
+        <member name="F:Psns.Common.Mvc.ViewBuilding.Attributes.InputPropertyType.Basic">
+            <summary>
+            An example is a bool
+            </summary>
+        </member>
+        <member name="F:Psns.Common.Mvc.ViewBuilding.Attributes.InputPropertyType.String">
+            <summary>
+            Represents a simple text box input
+            </summary>
+        </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.Attributes.ViewComplexPropertyAttribute">
+            <summary>
+            Provides information needed by the CrudViewBuilder to map reference type attributes
+            </summary>
+        </member>
+        <member name="F:Psns.Common.Mvc.ViewBuilding.Attributes.ViewComplexPropertyAttribute.LabelPropertyName">
+            <summary>
+            The name of the property that will be used as the label when mapping
+            </summary>
+        </member>
+        <member name="F:Psns.Common.Mvc.ViewBuilding.Attributes.ViewComplexPropertyAttribute.ValuePropertyName">
+            <summary>
+            The name of the property that will be used as the value when mapping
+            </summary>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.Attributes.ViewComplexPropertyAttribute.#ctor(System.String,System.String)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="labelPropertyName">The name of the property that will be used as the label when mapping</param>
+            <param name="valuePropertyName">The name of the property that will be used as the value when mapping</param>
+        </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.Attributes.ViewComplexPropertyForeignKeyAttribute">
+            <summary>
+            Annotates the foreign key id used to represent a singular navigation property
+            </summary>
+        </member>
+        <member name="F:Psns.Common.Mvc.ViewBuilding.Attributes.ViewComplexPropertyForeignKeyAttribute.ForPropertyName">
+            <summary>
+            The name of the property that this is a foreign key for
+            </summary>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.Attributes.ViewComplexPropertyForeignKeyAttribute.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="forPropertyName">The name of the property that this is a foreign key for</param>
+        </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.Attributes.DisplayViewTypes">
+            <summary>
+            Used to annotate which view a property should be displayed on
+            </summary>
+        </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.Attributes.ViewDisplayablePropertyAttribute">
+            <summary>
+            Configure how a property should be displayed by the View Mapper
+            </summary>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.Attributes.ViewDisplayablePropertyAttribute.#ctor(Psns.Common.Mvc.ViewBuilding.Attributes.DisplayViewTypes[])">
+            <summary>
+            Constructor
+            </summary>
+            <param name="viewTypes">Which views this property should be displayed on</param>
+        </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.Attributes.ViewUpdatablePropertyAttribute">
+            <summary>
+            Used to display a property on create and update views
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Psns.Common.Mvc.ViewBuilding.Entities.CrudEntityExtensions.GetEnumerableProperties(System.Object)" -->
+        <member name="M:Psns.Common.Mvc.ViewBuilding.Entities.CrudEntityExtensions.GetComplexPropertyNames(System.Linq.IOrderedEnumerable{System.Reflection.PropertyInfo})">
+            <summary>
+            Gets all property names of an object that are decorated with ViewComplexPropertyAttribute or ViewComplexPropertyForeignKeyAttribute.
+            </summary>
+            <param name="properties">A list of PropertyInfo object to query</param>
+            <returns>string[]</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Psns.Common.Mvc.ViewBuilding.Entities.CrudEntityExtensions.GetUpdateProperties(System.Type)" -->
+        <member name="M:Psns.Common.Mvc.ViewBuilding.Entities.CrudEntityExtensions.GetPropertyOrder(System.Reflection.PropertyInfo,System.Int32)">
+            <summary>
+            Gets the order of a given PropertyInfo as annotated by a DisplayAttribute.Order.
+            </summary>
+            <param name="property">The given PropertyInfo</param>
+            <param name="displayOrderCount">An integer with a pre-existing order value.</param>
+            <returns>int</returns>
+        </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.Entities.INameable">
+            <summary>
+            Represents an object with a string property called Name
+            </summary>
+        </member>
+        <member name="P:Psns.Common.Mvc.ViewBuilding.Entities.INameable.Name">
+            <summary>
+            The Name of the INameable
+            </summary>
+        </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.ViewModels.IDetailsViewVisitor">
+            <summary>
+            Defines a visitor for the DetailsView model
+            </summary>
+        </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.ViewModels.TableModel.ITableVisitor">
+            <summary>
+            Defines a visitor for the Table view model
+            </summary>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.ViewModels.TableModel.ITableVisitor.Visit(Psns.Common.Mvc.ViewBuilding.ViewModels.TableModel.Table)">
+            <summary>
+            Defines a method that visits the Table
+            </summary>
+            <param name="table">Table view model</param>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.ViewModels.TableModel.ITableVisitor.Visit(Psns.Common.Mvc.ViewBuilding.ViewModels.TableModel.Row)">
+            <summary>
+            Defines a method that visits each Row of a Table
+            </summary>
+            <param name="row">A Row of the Table</param>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.ViewModels.TableModel.ITableVisitor.Visit(Psns.Common.Mvc.ViewBuilding.ViewModels.TableModel.Column)">
+            <summary>
+            Defines a method that visits each Column of each Row of a Table
+            </summary>
+            <param name="column">A Column of a Row of a Table</param>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.ViewModels.IDetailsViewVisitor.Visit(Psns.Common.Mvc.ViewBuilding.ViewModels.DetailsView)">
+            <summary>
+            Defines a method that receives the DetailsView being visited
+            </summary>
+            <param name="indexView">The DetailsView being visited</param>
+        </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.ViewModels.DetailsView">
+            <summary>
+            A View with a Table that is used for a typical details view page
+            </summary>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.ViewModels.DetailsView.Accept(Psns.Common.Mvc.ViewBuilding.ViewModels.IDetailsViewVisitor)">
+            <summary>
+            Accept an IDetailsViewVisitor and pass it this
+            </summary>
+            <param name="visitor">IDetailsViewVisitor</param>
+        </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.ViewModels.IIndexViewVisitor">
+            <summary>
+            Defines a visitor for the IndexView model
+            </summary>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.ViewModels.IIndexViewVisitor.Visit(Psns.Common.Mvc.ViewBuilding.ViewModels.IndexView)">
+            <summary>
+            Defines a method that receives the IndexView being visited
+            </summary>
+            <param name="indexView">The IndexView being visited</param>
+        </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.ViewModels.IndexView">
+            <summary>
+            Contains the element for a common index view
+            </summary>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.ViewModels.IndexView.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="modelName">The name of the model being represented in the index view</param>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.ViewModels.IndexView.Accept(Psns.Common.Mvc.ViewBuilding.ViewModels.IIndexViewVisitor)">
+            <summary>
+            Accept an IIndexViewVisitor and pass it this
+            </summary>
+            <param name="visitor">IIndexViewVisitor</param>
+        </member>
+        <member name="P:Psns.Common.Mvc.ViewBuilding.ViewModels.IndexView.CreateButton">
+            <summary>
+            Represents the Create New Item button on the Index View
+            </summary>
+        </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.Menu.GlobalMenu">
+            <summary>
+            Provides top-level menu content to be rendered in PSNSLayout
+            </summary>
+        </member>
+        <member name="P:Psns.Common.Mvc.ViewBuilding.Menu.GlobalMenu.GlobalMenuItems">
+            <summary>
+            Provides content for top-level drop-down menus
+            </summary>
+        </member>
+        <member name="P:Psns.Common.Mvc.ViewBuilding.Menu.GlobalMenu.ContextMenu">
+            <summary>
+            Provides application specific menu items to be rendered in PSNSLayout ContextActions section
+            </summary>
+        </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.Menu.IContextMenu">
+            <summary>
+            Defines the application specific context menu area
+            </summary>
+        </member>
+        <member name="P:Psns.Common.Mvc.ViewBuilding.Menu.IContextMenu.Title">
+            <summary>
+            The title of the application
+            </summary>
+        </member>
+        <member name="P:Psns.Common.Mvc.ViewBuilding.Menu.IContextMenuWithDropDowns.MenuItems">
+            <summary>
+            Defines application specific drop-down menus
+            </summary>
+        </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.Menu.IMenuItem">
+            <summary>
+            Defines a drop-down menu
+            </summary>
+        </member>
+        <member name="P:Psns.Common.Mvc.ViewBuilding.Menu.IMenuItem.RootNode">
+            <summary>
+            The root of a drop-down menu
+            </summary>
+        </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.Menu.MenuNode">
+            <summary>
+            A node within a drop-down menu
+            </summary>
+        </member>
+        <member name="P:Psns.Common.Mvc.ViewBuilding.Menu.MenuNode.Text">
+            <summary>
+            Text to be displayed
+            </summary>
+        </member>
+        <member name="P:Psns.Common.Mvc.ViewBuilding.Menu.MenuNode.Title">
+            <summary>
+            Text for Html Title
+            </summary>
+        </member>
+        <member name="P:Psns.Common.Mvc.ViewBuilding.Menu.MenuNode.Url">
+            <summary>
+            Url to link to
+            </summary>
+        </member>
+        <member name="P:Psns.Common.Mvc.ViewBuilding.Menu.MenuNode.IconHtmlClasses">
+            <summary>
+            Html classes used to display an icon instead of text
+            </summary>
+        </member>
+        <member name="P:Psns.Common.Mvc.ViewBuilding.Menu.MenuNode.Children">
+            <summary>
+            Child nodes to be display as a sub-menu to this node
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.AspNet.Identity.Core">
+      <HintPath>..\..\packages\Microsoft.AspNet.Identity.Core.2.2.0\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
@@ -37,8 +40,9 @@
     <Reference Include="Ninject">
       <HintPath>..\..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
     </Reference>
-    <Reference Include="Psns.Common.Mvc.ViewBuilding">
-      <HintPath>..\..\packages\Psns.Common.Mvc.ViewBuilding.2.0.0.0\lib\net45\Psns.Common.Mvc.ViewBuilding.dll</HintPath>
+    <Reference Include="Psns.Common.Mvc.ViewBuilding, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Psns.Common.Mvc.ViewBuilding.3.0.0-rc1\lib\net45\Psns.Common.Mvc.ViewBuilding.dll</HintPath>
     </Reference>
     <Reference Include="Psns.Common.Persistence.Definitions">
       <HintPath>..\..\packages\Psns.Common.Persistence.Definitions.1.0.3.0\lib\net45\Psns.Common.Persistence.Definitions.dll</HintPath>
@@ -79,12 +83,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\CrudAuthorizeAttribute.cs" />
     <Compile Include="AuthorizedCrudViewBuilder.cs" />
+    <Compile Include="AccessType.cs" />
+    <Compile Include="ICrudUserStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

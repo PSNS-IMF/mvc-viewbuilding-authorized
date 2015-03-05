@@ -9,15 +9,30 @@ using Psns.Common.Mvc.ViewBuilding.ViewModels;
 using Psns.Common.Mvc.ViewBuilding.Entities;
 using Psns.Common.Persistence.Definitions;
 
+using Psns.Common.Mvc.ViewBuilding.Authorized.Attributes;
+
+using Microsoft.AspNet.Identity;
+
 namespace Psns.Common.Mvc.ViewBuilding.Authorized
 {
-    public class AuthorizedCrudViewBuilder : ICrudViewBuilder
+    public interface IAuthorizedCrudViewBuilder<TUser, in TKey> : ICrudViewBuilder 
+        where TUser : class, IUser<TKey>
+        where TKey : IEquatable<TKey> { }
+
+    public class AuthorizedCrudViewBuilder<TUser, TKey> : IAuthorizedCrudViewBuilder<TUser, TKey>
+        where TUser : class, IUser<TKey>
+        where TKey : IEquatable<TKey>
     {
         ICrudViewBuilder _baseBuilder;
+        ICrudUserStore<TUser, TKey> _userStore;
+        UserManager<TUser, TKey> _userManager;
 
-        public AuthorizedCrudViewBuilder(ICrudViewBuilder baseBuilder)
+        public AuthorizedCrudViewBuilder(ICrudViewBuilder baseBuilder, ICrudUserStore<TUser, TKey> userStore)
         {
             _baseBuilder = baseBuilder;
+
+            _userStore = userStore;
+            _userManager = new UserManager<TUser, TKey>(_userStore);
         }
 
         public DetailsView BuildDetailsView<T>(int id, params IDetailsViewVisitor[] viewVisitors) 
@@ -26,6 +41,21 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
             return _baseBuilder.BuildDetailsView<T>(id, viewVisitors);
         }
 
+        /// <summary>
+        /// If T isn't decorated with a CrudAuthorizeAttribute where the AccessType is set to Create or
+        /// the 
+        /// then the IndexView.CreateButton returned from baseBuilder is set to null.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="sortKey"></param>
+        /// <param name="sortDirection"></param>
+        /// <param name="filterKeys"></param>
+        /// <param name="filterValues"></param>
+        /// <param name="searchQuery"></param>
+        /// <param name="viewVisitors"></param>
+        /// <returns></returns>
         public IndexView BuildIndexView<T>(int? page = null, 
             int? pageSize = null, 
             string sortKey = null, 
@@ -36,25 +66,47 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
             params IIndexViewVisitor[] viewVisitors) 
             where T : class, IIdentifiable
         {
-            throw new NotImplementedException();
+            var view = _baseBuilder.BuildIndexView<T>(page, 
+                pageSize, 
+                sortKey, 
+                sortDirection, 
+                filterKeys, 
+                filterValues, 
+                searchQuery, 
+                viewVisitors);
+
+            var authorizeAttribute = (typeof(T).GetCustomAttributes(typeof(CrudAuthorizeAttribute), false) as CrudAuthorizeAttribute[])
+                .Where(attribute => attribute.AccessType == AccessType.Create).SingleOrDefault();
+
+            if(authorizeAttribute != null)
+            {
+                foreach(var roleName in authorizeAttribute.RoleNames)
+                {
+                    if(_userManager.IsInRole(_userStore.CurrentUser.Id, roleName))
+                        return view;
+                }
+            }
+
+            view.CreateButton = null;
+            return view;
         }
 
         public UpdateView BuildUpdateView<T>(T model) 
             where T : class, IIdentifiable, INameable
         {
-            throw new NotImplementedException();
+            return _baseBuilder.BuildUpdateView<T>(model);
         }
 
         public UpdateView BuildUpdateView<T>(int? id) 
             where T : class, IIdentifiable, INameable
         {
-            throw new NotImplementedException();
+            return _baseBuilder.BuildUpdateView<T>(id);
         }
 
         public IEnumerable<FilterOption> GetIndexFilterOptions<T>() 
             where T : class, IIdentifiable
         {
-            throw new NotImplementedException();
+            return _baseBuilder.GetIndexFilterOptions<T>();
         }
     }
 }

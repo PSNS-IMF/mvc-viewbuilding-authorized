@@ -7,9 +7,15 @@ using System.Threading.Tasks;
 using Psns.Common.Persistence.Definitions;
 using Psns.Common.Mvc.ViewBuilding.Entities;
 
+using Psns.Common.Mvc.ViewBuilding.Authorized;
+using Psns.Common.Mvc.ViewBuilding.Authorized.Attributes;
+
+using System.Security.Permissions;
+
 namespace AuthorizedViewBuilding.UnitTests
 {
-    internal class TestEntity : IIdentifiable, INameable
+    [CrudAuthorize(AccessType.Create, "roleName")]
+    public  class TestEntity : IIdentifiable, INameable
     {
         public int Id       { get; set; }
         public string Name  { get; set; }
