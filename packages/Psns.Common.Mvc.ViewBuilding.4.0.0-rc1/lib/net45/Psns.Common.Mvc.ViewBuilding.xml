@@ -4,6 +4,16 @@
         <name>Psns.Common.Mvc.ViewBuilding</name>
     </assembly>
     <members>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.Adapters.RequestContextAdapter">
+            <summary>
+            An adapter for the HttpContext.Current.Request.RequestContext to assist with testing
+            </summary>
+        </member>
+        <member name="P:Psns.Common.Mvc.ViewBuilding.Adapters.RequestContextAdapter.Context">
+            <summary>
+            Unless explicitly set, HttpContext.Current.Request.RequestContext is returned
+            </summary>
+        </member>
         <member name="T:Psns.Common.Mvc.ViewBuilding.Attributes.InputPropertyType">
             <summary>
             Represents types of properties that will be displayed on an update view
@@ -105,27 +115,6 @@
             The Name of the INameable
             </summary>
         </member>
-        <member name="T:Psns.Common.Mvc.ViewBuilding.Adapters.RequestContextAdapter">
-            <summary>
-            An adapter for the HttpContext.Current.Request.RequestContext to assist with testing
-            </summary>
-        </member>
-        <member name="P:Psns.Common.Mvc.ViewBuilding.Adapters.RequestContextAdapter.Context">
-            <summary>
-            Unless explicitly set, HttpContext.Current.Request.RequestContext is returned
-            </summary>
-        </member>
-        <member name="T:Psns.Common.Mvc.ViewBuilding.ViewModels.DetailsView">
-            <summary>
-            A View with a Table that is used for a typical details view page
-            </summary>
-        </member>
-        <member name="M:Psns.Common.Mvc.ViewBuilding.ViewModels.DetailsView.Accept(Psns.Common.Mvc.ViewBuilding.ViewModels.IDetailsViewVisitor)">
-            <summary>
-            Accept an IDetailsViewVisitor and pass it this
-            </summary>
-            <param name="visitor">IDetailsViewVisitor</param>
-        </member>
         <member name="T:Psns.Common.Mvc.ViewBuilding.ViewModels.IDetailsViewVisitor">
             <summary>
             Defines a visitor for the DetailsView model
@@ -160,6 +149,17 @@
             </summary>
             <param name="indexView">The DetailsView being visited</param>
         </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.ViewModels.DetailsView">
+            <summary>
+            A View with a Table that is used for a typical details view page
+            </summary>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.ViewModels.DetailsView.Accept(Psns.Common.Mvc.ViewBuilding.ViewModels.IDetailsViewVisitor)">
+            <summary>
+            Accept an IDetailsViewVisitor and pass it this
+            </summary>
+            <param name="visitor">IDetailsViewVisitor</param>
+        </member>
         <member name="T:Psns.Common.Mvc.ViewBuilding.ViewModels.IIndexViewVisitor">
             <summary>
             Defines a visitor for the IndexView model
@@ -191,6 +191,11 @@
         <member name="P:Psns.Common.Mvc.ViewBuilding.ViewModels.IndexView.CreateButton">
             <summary>
             Represents the Create New Item button on the Index View
+            </summary>
+        </member>
+        <member name="P:Psns.Common.Mvc.ViewBuilding.ViewModels.TableModel.ITableElement.Source">
+            <summary>
+            The object from which the element was built
             </summary>
         </member>
         <member name="T:Psns.Common.Mvc.ViewBuilding.Menu.GlobalMenu">

@@ -48,9 +48,9 @@
     <Reference Include="Ninject">
       <HintPath>..\..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
     </Reference>
-    <Reference Include="Psns.Common.Mvc.ViewBuilding, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Psns.Common.Mvc.ViewBuilding, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Psns.Common.Mvc.ViewBuilding.3.0.0-rc1\lib\net45\Psns.Common.Mvc.ViewBuilding.dll</HintPath>
+      <HintPath>..\..\packages\Psns.Common.Mvc.ViewBuilding.4.0.0-rc1\lib\net45\Psns.Common.Mvc.ViewBuilding.dll</HintPath>
     </Reference>
     <Reference Include="Psns.Common.Persistence.Definitions">
       <HintPath>..\..\packages\Psns.Common.Persistence.Definitions.1.0.3.0\lib\net45\Psns.Common.Persistence.Definitions.dll</HintPath>
@@ -102,6 +102,7 @@
   <ItemGroup>
     <Compile Include="TestEntity.cs" />
     <Compile Include="User.cs" />
+    <Compile Include="WhenWorkingWithTheAuthorizedIndexVisitor.cs" />
     <Compile Include="WhenWorkingWithTheAuthorizedCrudViewBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

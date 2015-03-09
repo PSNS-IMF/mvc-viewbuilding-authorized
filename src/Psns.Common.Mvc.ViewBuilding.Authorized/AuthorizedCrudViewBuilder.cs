@@ -43,7 +43,7 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
 
         /// <summary>
         /// If T isn't decorated with a CrudAuthorizeAttribute where the AccessType is set to Create or
-        /// the 
+        /// the current user isn't in the Role listed in the RolesNames of the CrudAuthorizeAttribute, 
         /// then the IndexView.CreateButton returned from baseBuilder is set to null.
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -66,29 +66,21 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
             params IIndexViewVisitor[] viewVisitors) 
             where T : class, IIdentifiable
         {
-            var view = _baseBuilder.BuildIndexView<T>(page, 
+            var visitors = viewVisitors ?? new IIndexViewVisitor[0];
+
+            visitors = visitors.Concat(new IIndexViewVisitor[] 
+            { 
+                new AuthorizedIndexVisitor<TUser, TKey, T>(_userStore, _userManager) 
+            }).ToArray();
+
+            return _baseBuilder.BuildIndexView<T>(page, 
                 pageSize, 
                 sortKey, 
                 sortDirection, 
                 filterKeys, 
                 filterValues, 
                 searchQuery, 
-                viewVisitors);
-
-            var authorizeAttribute = (typeof(T).GetCustomAttributes(typeof(CrudAuthorizeAttribute), false) as CrudAuthorizeAttribute[])
-                .Where(attribute => attribute.AccessType == AccessType.Create).SingleOrDefault();
-
-            if(authorizeAttribute != null)
-            {
-                foreach(var roleName in authorizeAttribute.RoleNames)
-                {
-                    if(_userManager.IsInRole(_userStore.CurrentUser.Id, roleName))
-                        return view;
-                }
-            }
-
-            view.CreateButton = null;
-            return view;
+                visitors);
         }
 
         public UpdateView BuildUpdateView<T>(T model) 

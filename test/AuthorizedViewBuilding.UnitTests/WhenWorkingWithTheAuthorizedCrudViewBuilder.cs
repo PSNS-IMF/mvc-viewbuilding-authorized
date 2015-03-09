@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 using Moq;
 
-namespace AuthorizedViewBuilding.UnitTests
+namespace AuthorizedViewBuilding.UnitTests.BuilderTests
 {
     public class WhenWorkingWithTheAuthorizedCrudViewBuilder : BehaviorDrivenDevelopmentCaseTemplate
     {
@@ -49,68 +49,20 @@ namespace AuthorizedViewBuilding.UnitTests
     }
 
     [TestClass]
-    public class AndBuildingTheIndexViewWithCreateAccess : WhenWorkingWithTheAuthorizedCrudViewBuilder
+    public class AndBuildingTheIndexView : WhenWorkingWithTheAuthorizedCrudViewBuilder
     {
-        IndexView _result;
-
-        public override void Arrange()
-        {
-            base.Arrange();
-
-            MockUserStore.Setup(u => u.CurrentUser).Returns(new User { Id = 1 });
-            MockUserStore.Setup(u => u.FindByIdAsync(It.IsAny<int>())).Returns(Task.FromResult(new User { Id = 1 }));
-            MockUserStore.Setup(u => u.IsInRoleAsync(It.IsAny<User>(), It.IsAny<string>())).Returns(Task.FromResult(true));
-
-            var view = new IndexView("TestEntity");
-            view.CreateButton = new ActionModel();
-
-            MockBaseBuilder.Setup(b => b.BuildIndexView<TestEntity>(null, null, null, null, null, null, null, null)).Returns(view);
-        }
-
         public override void Act()
         {
             base.Act();
 
-            _result = ViewBuilder.BuildIndexView<TestEntity>(null, null, null, null, null, null, null, null);
+            ViewBuilder.BuildIndexView<TestEntity>(null, null, null, null, null, null, null, null);
         }
 
         [TestMethod]
-        public void ThenTheCreateButtonShouldExist()
+        public void ThenTheBaseBuilderShouldBeCalledWithTHeAuthorizedIndexViewVisitor()
         {
-            Assert.IsNotNull(_result.CreateButton);
-        }
-    }
-
-    [TestClass]
-    public class AndBuildingTheIndexViewWithoutCreateAccess : WhenWorkingWithTheAuthorizedCrudViewBuilder
-    {
-        IndexView _result;
-
-        public override void Arrange()
-        {
-            base.Arrange();
-
-            MockUserStore.Setup(u => u.CurrentUser).Returns(new User { Id = 1 });
-            MockUserStore.Setup(u => u.FindByIdAsync(It.IsAny<int>())).Returns(Task.FromResult(new User { Id = 1 }));
-            MockUserStore.Setup(u => u.IsInRoleAsync(It.IsAny<User>(), It.IsAny<string>())).Returns(Task.FromResult(false));
-
-            var view = new IndexView("TestEntity");
-            view.CreateButton = new ActionModel();
-
-            MockBaseBuilder.Setup(b => b.BuildIndexView<TestEntity>(null, null, null, null, null, null, null, null)).Returns(view);
-        }
-
-        public override void Act()
-        {
-            base.Act();
-
-            _result = ViewBuilder.BuildIndexView<TestEntity>(null, null, null, null, null, null, null, null);
-        }
-
-        [TestMethod]
-        public void ThenTheCreateButtonShouldNotExistInContextItems()
-        {
-            Assert.IsNull(_result.CreateButton);
+            MockBaseBuilder.Verify(b => b.BuildIndexView<TestEntity>(null, null, null, null, null, null, null, 
+                It.Is<IIndexViewVisitor[]>(array => array[0] is AuthorizedIndexVisitor<User, int, TestEntity>)), Times.Once());
         }
     }
 
