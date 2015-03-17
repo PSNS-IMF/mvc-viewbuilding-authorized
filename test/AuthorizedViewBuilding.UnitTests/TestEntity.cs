@@ -22,7 +22,10 @@ namespace AuthorizedViewBuilding.UnitTests
 
         public bool Demand(User user, AccessType accessType)
         {
-            return user.UserName.Equals("Authorized");
+            if(accessType == AccessType.Read)
+                return this.Name.Equals("Authorized");
+            else
+                return false;
         }
     }
 }

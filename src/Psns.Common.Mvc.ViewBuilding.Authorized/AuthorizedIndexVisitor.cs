@@ -50,16 +50,21 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
 
         public void Visit(Row row)
         {
-            if(row.Source is ISecurable<TUser, TKey> && 
-                !(row.Source as ISecurable<TUser, TKey>).Demand(_userStore.CurrentUser, AccessType.Read))
-            {
-                row = null;
-            }
+            return;
         }
 
         public void Visit(Table table)
         {
-            return;
+            for(int i = 0; i < table.Rows.Count; i++)
+            {
+                var row = table.Rows[i];
+
+                if(row.Source is ISecurable<TUser, TKey> &&
+                    !(row.Source as ISecurable<TUser, TKey>).Demand(_userStore.CurrentUser, AccessType.Read))
+                {
+                    table.Rows.Remove(row);
+                }
+            }
         }
     }
 }

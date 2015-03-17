@@ -21,7 +21,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="Psns.Common.Mvc.ViewBuilding.Authorized\bin\$configuration$\Psns.Common.Mvc.ViewBuilding.Authorized.*" target="lib\net45\" />
-    <file src="Psns.Common.Mvc.ViewBuilding.Authorized\bin\$configuration$\net40\Psns.Common.Mvc.ViewBuilding.Authorized.*" target="lib\net40\" />
+    <file src="src\Psns.Common.Mvc.ViewBuilding.Authorized\bin\$configuration$\Psns.Common.Mvc.ViewBuilding.Authorized.*" target="lib\net45\" />
   </files>
 </package>

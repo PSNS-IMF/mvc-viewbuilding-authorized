@@ -88,8 +88,7 @@ namespace AuthorizedViewBuilding.UnitTests.VisitorTests
         {
             base.Arrange();
 
-            //MockUserStore.Setup(u => u.IsInRoleAsync(It.IsAny<User>(), It.IsAny<string>())).Returns(Task.FromResult(false));
-            MockUserStore.Setup(u => u.CurrentUser).Returns(new User { Id = 1, UserName = "Randowm" });
+            MockUserStore.Setup(u => u.CurrentUser).Returns(new User { Id = 1, UserName = "Random" });
 
             IndexView = new IndexView("modelName");
             var row = new Row(new TestEntity { Name = "Authorized" });
@@ -101,14 +100,14 @@ namespace AuthorizedViewBuilding.UnitTests.VisitorTests
 
         public override void Act()
         {
-            foreach(var row in IndexView.Table.Rows)
-                Visitor.Visit(row);
+            IndexView.Table.Accept(Visitor);
         }
 
         [TestMethod]
         public void ThenTheEntityShouldNotBeInTheIndexViewsTable()
         {
             Assert.AreEqual(1, IndexView.Table.Rows.Count);
+            Assert.AreEqual("Authorized", (IndexView.Table.Rows[0].Source as TestEntity).Name);
         }
     }
 }
