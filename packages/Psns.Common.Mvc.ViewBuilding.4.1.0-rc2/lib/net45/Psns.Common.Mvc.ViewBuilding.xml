@@ -4,6 +4,16 @@
         <name>Psns.Common.Mvc.ViewBuilding</name>
     </assembly>
     <members>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.Adapters.RequestContextAdapter">
+            <summary>
+            An adapter for the HttpContext.Current.Request.RequestContext to assist with testing
+            </summary>
+        </member>
+        <member name="P:Psns.Common.Mvc.ViewBuilding.Adapters.RequestContextAdapter.Context">
+            <summary>
+            Unless explicitly set, HttpContext.Current.Request.RequestContext is returned
+            </summary>
+        </member>
         <member name="T:Psns.Common.Mvc.ViewBuilding.Attributes.InputPropertyType">
             <summary>
             Represents types of properties that will be displayed on an update view
@@ -78,6 +88,33 @@
             Used to display a property on create and update views
             </summary>
         </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.Controllers.IDeleteable`1">
+            <summary>
+            Defines an IRepositoryController that can delete
+            </summary>
+            <typeparam name="T">A type that implements INameable and IIdentifiable</typeparam>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.Controllers.IDeleteable`1.Delete(System.Int32)">
+            <summary>
+            Defines a delete method
+            </summary>
+            <param name="id">The id of the object to delete</param>
+            <returns>An ActionResult</returns>
+        </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.Controllers.DeleteableExtensions">
+            <summary>
+            Extensions for IDeleteable methods
+            </summary>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.Controllers.DeleteableExtensions.Delete``1(Psns.Common.Mvc.ViewBuilding.Controllers.IDeleteable{``0},System.Int32)">
+            <summary>
+            Validates the AntiForgery token and calls delete for the id on the Repository
+            </summary>
+            <typeparam name="T">A type that implements INameable and IIdentifiable</typeparam>
+            <param name="controller">The controller being extended</param>
+            <param name="id">The id of the object to be deleted</param>
+            <returns>A redirect to the Index</returns>
+        </member>
         <!-- Badly formed XML comment ignored for member "M:Psns.Common.Mvc.ViewBuilding.Entities.CrudEntityExtensions.GetEnumerableProperties(System.Object)" -->
         <member name="M:Psns.Common.Mvc.ViewBuilding.Entities.CrudEntityExtensions.GetComplexPropertyNames(System.Linq.IOrderedEnumerable{System.Reflection.PropertyInfo})">
             <summary>
@@ -104,27 +141,6 @@
             <summary>
             The Name of the INameable
             </summary>
-        </member>
-        <member name="T:Psns.Common.Mvc.ViewBuilding.Adapters.RequestContextAdapter">
-            <summary>
-            An adapter for the HttpContext.Current.Request.RequestContext to assist with testing
-            </summary>
-        </member>
-        <member name="P:Psns.Common.Mvc.ViewBuilding.Adapters.RequestContextAdapter.Context">
-            <summary>
-            Unless explicitly set, HttpContext.Current.Request.RequestContext is returned
-            </summary>
-        </member>
-        <member name="T:Psns.Common.Mvc.ViewBuilding.ViewModels.DetailsView">
-            <summary>
-            A View with a Table that is used for a typical details view page
-            </summary>
-        </member>
-        <member name="M:Psns.Common.Mvc.ViewBuilding.ViewModels.DetailsView.Accept(Psns.Common.Mvc.ViewBuilding.ViewModels.IDetailsViewVisitor)">
-            <summary>
-            Accept an IDetailsViewVisitor and pass it this
-            </summary>
-            <param name="visitor">IDetailsViewVisitor</param>
         </member>
         <member name="T:Psns.Common.Mvc.ViewBuilding.ViewModels.IDetailsViewVisitor">
             <summary>
@@ -160,6 +176,17 @@
             </summary>
             <param name="indexView">The DetailsView being visited</param>
         </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.ViewModels.DetailsView">
+            <summary>
+            A View with a Table that is used for a typical details view page
+            </summary>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.ViewModels.DetailsView.Accept(Psns.Common.Mvc.ViewBuilding.ViewModels.IDetailsViewVisitor)">
+            <summary>
+            Accept an IDetailsViewVisitor and pass it this
+            </summary>
+            <param name="visitor">IDetailsViewVisitor</param>
+        </member>
         <member name="T:Psns.Common.Mvc.ViewBuilding.ViewModels.IIndexViewVisitor">
             <summary>
             Defines a visitor for the IndexView model
@@ -191,6 +218,11 @@
         <member name="P:Psns.Common.Mvc.ViewBuilding.ViewModels.IndexView.CreateButton">
             <summary>
             Represents the Create New Item button on the Index View
+            </summary>
+        </member>
+        <member name="P:Psns.Common.Mvc.ViewBuilding.ViewModels.TableModel.ITableElement.Source">
+            <summary>
+            The object from which the element was built
             </summary>
         </member>
         <member name="T:Psns.Common.Mvc.ViewBuilding.Menu.GlobalMenu">
@@ -261,11 +293,6 @@
         <member name="P:Psns.Common.Mvc.ViewBuilding.Menu.MenuNode.Children">
             <summary>
             Child nodes to be display as a sub-menu to this node
-            </summary>
-        </member>
-        <member name="P:Psns.Common.Mvc.ViewBuilding.ViewModels.TableModel.ITableElement.Source">
-            <summary>
-            The object from which the element was built
             </summary>
         </member>
     </members>
