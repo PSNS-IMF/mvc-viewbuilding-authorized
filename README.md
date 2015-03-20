@@ -3,4 +3,4 @@
 Adds an authorization layer to [ViewBuilding](https://github.com/PSNS-IMF/mvc-viewbuilding) so that only authorized content is displayed.
 
 ## CI build status
-[![Build Status](https://www.myget.org/BuildSource/Badge/)](https://www.myget.org/)
+[![Build Status](https://www.myget.org/BuildSource/Badge/psns-common?identifier=ae0dbf19-e6d7-4560-bbe5-175f25b2b02b)](https://www.myget.org/)
