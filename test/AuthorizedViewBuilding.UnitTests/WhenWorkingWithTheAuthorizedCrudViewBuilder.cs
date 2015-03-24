@@ -113,7 +113,9 @@ namespace AuthorizedViewBuilding.UnitTests.BuilderTests
         [TestMethod]
         public void ThenTheBaseBuilderGetIndexFilterOptionsShouldBeCalledOnce()
         {
-            MockBaseBuilder.Verify(b => b.GetIndexFilterOptions<TestEntity>(), Times.Once());
+            MockBaseBuilder.Verify(b => b.GetIndexFilterOptions<TestEntity>(
+                It.Is<IFilterOptionVisitor[]>(array => array[0] is AuthorizedFilterOptionsVisitor<User, int>)), Times.Once()
+            );
         }
     }
 }

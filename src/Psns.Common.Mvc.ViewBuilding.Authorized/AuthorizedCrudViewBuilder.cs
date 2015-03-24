@@ -95,10 +95,17 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
             return _baseBuilder.BuildUpdateView<T>(id);
         }
 
-        public IEnumerable<FilterOption> GetIndexFilterOptions<T>() 
+        public IEnumerable<FilterOption> GetIndexFilterOptions<T>(params IFilterOptionVisitor[] filterOptionVisitors) 
             where T : class, IIdentifiable
         {
-            return _baseBuilder.GetIndexFilterOptions<T>();
+            var visitors = filterOptionVisitors ?? new IFilterOptionVisitor[0];
+
+            visitors = visitors.Concat(new IFilterOptionVisitor[] 
+            { 
+                new AuthorizedFilterOptionsVisitor<TUser, TKey>(_userStore)
+            }).ToArray();
+
+            return _baseBuilder.GetIndexFilterOptions<T>(visitors);
         }
     }
 }

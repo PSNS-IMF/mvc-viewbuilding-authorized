@@ -59,11 +59,8 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
             {
                 var row = table.Rows[i];
 
-                if(row.Source is ISecurable<TUser, TKey> &&
-                    !(row.Source as ISecurable<TUser, TKey>).Demand(_userStore.CurrentUser, AccessType.Read))
-                {
+                if(row.Source.PermissionDenied(_userStore, AccessType.Read))
                     table.Rows.Remove(row);
-                }
             }
         }
     }

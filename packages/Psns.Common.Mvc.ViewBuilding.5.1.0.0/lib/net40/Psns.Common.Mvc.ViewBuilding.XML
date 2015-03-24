@@ -4,6 +4,16 @@
         <name>Psns.Common.Mvc.ViewBuilding</name>
     </assembly>
     <members>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.App_Start.ViewBuildingActivator.Start">
+            <summary>
+            Starts the application
+            </summary>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.App_Start.ViewBuildingActivator.Stop">
+            <summary>
+            Stops the application.
+            </summary>
+        </member>
         <member name="T:Psns.Common.Mvc.ViewBuilding.Attributes.InputPropertyType">
             <summary>
             Represents types of properties that will be displayed on an update view
@@ -105,6 +115,60 @@
             <param name="id">The id of the object to be deleted</param>
             <returns>A redirect to the Index</returns>
         </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.Controllers.IIndexController">
+            <summary>
+            Defines an api controller for an Index view
+            </summary>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.Controllers.IIndexController.GetFilterOptions(System.String)">
+            <summary>
+            Defines a method that returns filter options for an Index view
+            </summary>
+            <param name="modelName">The name of the model from which the filter options are generated</param>
+            <returns>The filter options</returns>
+        </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.Controllers.IIndexControllerExtensions">
+            <summary>
+            Extensions for IIndexController to enable re-usability
+            </summary>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.Controllers.IIndexControllerExtensions.GetFilterOptions(Psns.Common.Mvc.ViewBuilding.Controllers.IIndexController,System.String,Psns.Common.Mvc.ViewBuilding.ViewBuilders.ICrudViewBuilder,Psns.Common.Mvc.ViewBuilding.ViewModels.IFilterOptionVisitor[])">
+            <summary>
+            Calls the GetIndexFilterOptions on the ViewBuilder and returns the results
+            </summary>
+            <param name="controller"></param>
+            <param name="modelName">The Fully Qualified Assembly Name of the model</param>
+            <param name="viewBuilder">An ICrudViewBuilder implementation</param>
+            <param name="visitors">Any IFilterOptionVisitors to be passed to the ViewBuilder</param>
+            <returns></returns>
+        </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.Controllers.IndexController">
+            <summary>
+            An Api controller for the Index view
+            </summary>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.Controllers.IndexController.#ctor(Psns.Common.Mvc.ViewBuilding.ViewBuilders.ICrudViewBuilder)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="viewBuilder">The viewBuilder to retrieve the view models from</param>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.Controllers.IndexController.GetFilterOptions(System.String)">
+            <summary>
+            Returns the options used to populate the filter drop downs on the Index view
+            </summary>
+            <param name="modelName">The Fully Qualified Assembly Name of the class whose properties are used in the Index View</param>
+            <returns>A collection of FilterOption objects</returns>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.ViewBuilders.CrudViewBuilder.GetIndexFilterOptions``1(Psns.Common.Mvc.ViewBuilding.ViewModels.IFilterOptionVisitor[])">
+            <summary>
+            Used to populate the index view filter menus. If an IFilterOptionsVisitor sets an item to null,
+            then it will not be included in the results.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="filterOptionVisitors"></param>
+            <returns></returns>
+        </member>
         <!-- Badly formed XML comment ignored for member "M:Psns.Common.Mvc.ViewBuilding.Entities.CrudEntityExtensions.GetEnumerableProperties(System.Object)" -->
         <member name="M:Psns.Common.Mvc.ViewBuilding.Entities.CrudEntityExtensions.GetComplexPropertyNames(System.Linq.IOrderedEnumerable{System.Reflection.PropertyInfo})">
             <summary>
@@ -187,6 +251,13 @@
             </summary>
             <param name="indexView">The DetailsView being visited</param>
         </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.ViewModels.IFilterOptionVisitor.Visit(Psns.Common.Persistence.Definitions.IIdentifiable)">
+            <summary>
+            Defines a method that visits an IIdentifiable type
+            </summary>
+            <param name="item">The item to visit</param>
+            <returns>Returns a potentially modified version of item</returns>
+        </member>
         <member name="T:Psns.Common.Mvc.ViewBuilding.ViewModels.IIndexViewVisitor">
             <summary>
             Defines a visitor for the IndexView model
@@ -218,6 +289,11 @@
         <member name="P:Psns.Common.Mvc.ViewBuilding.ViewModels.IndexView.CreateButton">
             <summary>
             Represents the Create New Item button on the Index View
+            </summary>
+        </member>
+        <member name="P:Psns.Common.Mvc.ViewBuilding.ViewModels.IVisitable.Source">
+            <summary>
+            The object from which the element was built
             </summary>
         </member>
         <member name="T:Psns.Common.Mvc.ViewBuilding.Menu.GlobalMenu">
@@ -288,11 +364,6 @@
         <member name="P:Psns.Common.Mvc.ViewBuilding.Menu.MenuNode.Children">
             <summary>
             Child nodes to be display as a sub-menu to this node
-            </summary>
-        </member>
-        <member name="P:Psns.Common.Mvc.ViewBuilding.ViewModels.TableModel.ITableElement.Source">
-            <summary>
-            The object from which the element was built
             </summary>
         </member>
     </members>

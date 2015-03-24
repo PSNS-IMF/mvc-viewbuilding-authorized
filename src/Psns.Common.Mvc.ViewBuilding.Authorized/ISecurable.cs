@@ -12,4 +12,17 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
     {
         bool Demand(TUser user, AccessType accessType);
     }
+
+    public static class ISecurableExtensions
+    {
+        public static bool PermissionDenied<TUser, TKey>(this object subject,
+            ICrudUserStore<TUser, TKey> userStore,
+            AccessType accessType)
+            where TUser : class, IUser<TKey>
+            where TKey : IEquatable<TKey>
+        {
+            return (subject is ISecurable<TUser, TKey> &&
+                !(subject as ISecurable<TUser, TKey>).Demand(userStore.CurrentUser, accessType));
+        }
+    }
 }
