@@ -10,6 +10,10 @@
     <projectUrl>https://github.com/PSNS-IMF/mvc-viewbuilding-authorized</projectUrl>
     <licenseUrl>https://github.com/PSNS-IMF/mvc-viewbuilding-authorized/blob/master/LICENSE.md</licenseUrl>
     <releaseNotes>
+      ## 3.0.1.0
+      ### Features
+      * Added Ninject IKernel extension to provide some default bindings for the view building.
+
       ## 3.0.0.1
       ### Features
       * Updated to Psns.Common.Mvc.ViewBuilding.
@@ -26,7 +30,7 @@
     <tags>PSNS mvc4 mvc5 asp.net mvc AspNetMvc model automation crud views viewbuilding authorization</tags>
     <dependencies>
       <dependency id="Microsoft.AspNet.Identity.Core" version="2.2.0" />
-      <dependency id="Psns.Common.Mvc.ViewBuilding" version="5.1.0" />
+      <dependency id="Psns.Common.Mvc.ViewBuilding" version="5.1.2" />
     </dependencies>
   </metadata>
   <files>

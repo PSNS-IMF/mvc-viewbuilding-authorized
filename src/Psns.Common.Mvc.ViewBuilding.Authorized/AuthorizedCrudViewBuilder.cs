@@ -35,12 +35,6 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
             _userManager = new UserManager<TUser, TKey>(_userStore);
         }
 
-        public DetailsView BuildDetailsView<T>(int id, params IDetailsViewVisitor[] viewVisitors) 
-            where T : class, IIdentifiable, INameable
-        {
-            return _baseBuilder.BuildDetailsView<T>(id, viewVisitors);
-        }
-
         /// <summary>
         /// If T isn't decorated with a CrudAuthorizeAttribute where the AccessType is set to Create or
         /// the current user isn't in the Role listed in the RolesNames of the CrudAuthorizeAttribute, 
@@ -93,6 +87,12 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
             where T : class, IIdentifiable, INameable
         {
             return _baseBuilder.BuildUpdateView<T>(id);
+        }
+
+        public DetailsView BuildDetailsView<T>(int id, params IDetailsViewVisitor[] viewVisitors)
+            where T : class, IIdentifiable, INameable
+        {
+            return _baseBuilder.BuildDetailsView<T>(id, viewVisitors);
         }
 
         public IEnumerable<FilterOption> GetIndexFilterOptions<T>(params IFilterOptionVisitor[] filterOptionVisitors) 

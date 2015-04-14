@@ -116,6 +116,7 @@
     <Compile Include="AuthorizedFilterOptionsVisitor.cs" />
     <Compile Include="AuthorizedIndexVisitor.cs" />
     <Compile Include="ICrudUserStore.cs" />
+    <Compile Include="KernelExtensions.cs" />
     <Compile Include="ISecurable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
