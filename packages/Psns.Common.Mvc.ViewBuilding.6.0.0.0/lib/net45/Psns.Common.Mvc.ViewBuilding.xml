@@ -4,14 +4,14 @@
         <name>Psns.Common.Mvc.ViewBuilding</name>
     </assembly>
     <members>
-        <member name="M:Psns.Common.Mvc.ViewBuilding.App_Start.ViewBuildingActivator.Start">
+        <member name="T:Psns.Common.Mvc.ViewBuilding.Adapters.RequestContextAdapter">
             <summary>
-            Starts the application
+            An adapter for the HttpContext.Current.Request.RequestContext to assist with testing
             </summary>
         </member>
-        <member name="M:Psns.Common.Mvc.ViewBuilding.App_Start.ViewBuildingActivator.Stop">
+        <member name="P:Psns.Common.Mvc.ViewBuilding.Adapters.RequestContextAdapter.Context">
             <summary>
-            Stops the application.
+            Unless explicitly set, HttpContext.Current.Request.RequestContext is returned
             </summary>
         </member>
         <member name="T:Psns.Common.Mvc.ViewBuilding.Attributes.InputPropertyType">
@@ -160,6 +160,26 @@
             <param name="modelName">The Fully Qualified Assembly Name of the class whose properties are used in the Index View</param>
             <returns>A collection of FilterOption objects</returns>
         </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.ViewBuilders.CrudViewBuilder.BuildUpdateView``1(System.Nullable{System.Int32},Psns.Common.Mvc.ViewBuilding.ViewModels.IUpdateViewVisitor[])">
+            <summary>
+            Creates an update view. If an IUpdateViewVisitor sets an InputProperty to null,
+            then that property will not be rendered in the view.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="id">The id of the model to lookup in the repository factory</param>
+            <param name="viewVisitors"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.ViewBuilders.CrudViewBuilder.BuildUpdateView``1(``0,Psns.Common.Mvc.ViewBuilding.ViewModels.IUpdateViewVisitor[])">
+            <summary>
+            Creates an update view. If an IUpdateViewVisitor sets an InputProperty to null,
+            then that property will not be rendered in the view.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="model">The model used to generate the view</param>
+            <param name="viewVisitors"></param>
+            <returns></returns>
+        </member>
         <member name="M:Psns.Common.Mvc.ViewBuilding.ViewBuilders.CrudViewBuilder.GetIndexFilterOptions``1(Psns.Common.Mvc.ViewBuilding.ViewModels.IFilterOptionVisitor[])">
             <summary>
             Used to populate the index view filter menus. If an IFilterOptionsVisitor sets an item to null,
@@ -196,26 +216,15 @@
             The Name of the INameable
             </summary>
         </member>
-        <member name="T:Psns.Common.Mvc.ViewBuilding.Adapters.RequestContextAdapter">
+        <member name="T:Psns.Common.Mvc.ViewBuilding.Infrastructure.ViewBuildingNinjectModule">
             <summary>
-            An adapter for the HttpContext.Current.Request.RequestContext to assist with testing
+            Contains a binding for the CrudViewBuilder
             </summary>
         </member>
-        <member name="P:Psns.Common.Mvc.ViewBuilding.Adapters.RequestContextAdapter.Context">
+        <member name="M:Psns.Common.Mvc.ViewBuilding.Infrastructure.ViewBuildingNinjectModule.Load">
             <summary>
-            Unless explicitly set, HttpContext.Current.Request.RequestContext is returned
+            Binds ICrudViewBuilder to CrudViewBuilder
             </summary>
-        </member>
-        <member name="T:Psns.Common.Mvc.ViewBuilding.ViewModels.DetailsView">
-            <summary>
-            A View with a Table that is used for a typical details view page
-            </summary>
-        </member>
-        <member name="M:Psns.Common.Mvc.ViewBuilding.ViewModels.DetailsView.Accept(Psns.Common.Mvc.ViewBuilding.ViewModels.IDetailsViewVisitor)">
-            <summary>
-            Accept an IDetailsViewVisitor and pass it this
-            </summary>
-            <param name="visitor">IDetailsViewVisitor</param>
         </member>
         <member name="T:Psns.Common.Mvc.ViewBuilding.ViewModels.IDetailsViewVisitor">
             <summary>
@@ -258,6 +267,22 @@
             <param name="item">The item to visit</param>
             <returns>Returns a potentially modified version of item</returns>
         </member>
+        <member name="P:Psns.Common.Mvc.ViewBuilding.ViewModels.IVisitable.Source">
+            <summary>
+            The object from which the element was built
+            </summary>
+        </member>
+        <member name="T:Psns.Common.Mvc.ViewBuilding.ViewModels.DetailsView">
+            <summary>
+            A View with a Table that is used for a typical details view page
+            </summary>
+        </member>
+        <member name="M:Psns.Common.Mvc.ViewBuilding.ViewModels.DetailsView.Accept(Psns.Common.Mvc.ViewBuilding.ViewModels.IDetailsViewVisitor)">
+            <summary>
+            Accept an IDetailsViewVisitor and pass it this
+            </summary>
+            <param name="visitor">IDetailsViewVisitor</param>
+        </member>
         <member name="T:Psns.Common.Mvc.ViewBuilding.ViewModels.IIndexViewVisitor">
             <summary>
             Defines a visitor for the IndexView model
@@ -289,11 +314,6 @@
         <member name="P:Psns.Common.Mvc.ViewBuilding.ViewModels.IndexView.CreateButton">
             <summary>
             Represents the Create New Item button on the Index View
-            </summary>
-        </member>
-        <member name="P:Psns.Common.Mvc.ViewBuilding.ViewModels.IVisitable.Source">
-            <summary>
-            The object from which the element was built
             </summary>
         </member>
         <member name="T:Psns.Common.Mvc.ViewBuilding.Menu.GlobalMenu">

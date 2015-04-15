@@ -2,6 +2,7 @@
 
 using Psns.Common.Test.BehaviorDrivenDevelopment;
 using Psns.Common.Mvc.ViewBuilding.Authorized;
+using Psns.Common.Mvc.ViewBuilding.Authorized.Visitors;
 
 using Moq;
 

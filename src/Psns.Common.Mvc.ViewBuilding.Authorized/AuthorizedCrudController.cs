@@ -12,6 +12,12 @@ using Microsoft.AspNet.Identity;
 
 namespace Psns.Common.Mvc.ViewBuilding.Authorized
 {
+    /// <summary>
+    /// Derives from CrudController to enable permission checking
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="TUser"></typeparam>
+    /// <typeparam name="TUserKey"></typeparam>
     public class AuthorizedCrudController<TEntity, TUser, TUserKey> : CrudController<TEntity>
         where TEntity : class, INameable, IIdentifiable
         where TUser : class, IUser<TUserKey>

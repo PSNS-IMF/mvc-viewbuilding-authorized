@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Psns.Common.Mvc.ViewBuilding.Authorized.Visitors;
+
 using Psns.Common.Mvc.ViewBuilding.ViewBuilders;
 using Psns.Common.Mvc.ViewBuilding.ViewModels;
 using Psns.Common.Mvc.ViewBuilding.Entities;
@@ -15,10 +17,20 @@ using Microsoft.AspNet.Identity;
 
 namespace Psns.Common.Mvc.ViewBuilding.Authorized
 {
+    /// <summary>
+    /// Defines a CrudViewBuilder for authorization purposes
+    /// </summary>
+    /// <typeparam name="TUser"></typeparam>
+    /// <typeparam name="TKey"></typeparam>
     public interface IAuthorizedCrudViewBuilder<TUser, in TKey> : ICrudViewBuilder 
         where TUser : class, IUser<TKey>
         where TKey : IEquatable<TKey> { }
 
+    /// <summary>
+    /// A View Builder that provides the permission-checking Visitors
+    /// </summary>
+    /// <typeparam name="TUser"></typeparam>
+    /// <typeparam name="TKey"></typeparam>
     public class AuthorizedCrudViewBuilder<TUser, TKey> : IAuthorizedCrudViewBuilder<TUser, TKey>
         where TUser : class, IUser<TKey>
         where TKey : IEquatable<TKey>
@@ -36,9 +48,7 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
         }
 
         /// <summary>
-        /// If T isn't decorated with a CrudAuthorizeAttribute where the AccessType is set to Create or
-        /// the current user isn't in the Role listed in the RolesNames of the CrudAuthorizeAttribute, 
-        /// then the IndexView.CreateButton returned from baseBuilder is set to null.
+        /// Passes the AuthorizedIndexVisitor to the base view builder
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="page"></param>
@@ -77,24 +87,51 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
                 visitors);
         }
 
-        public UpdateView BuildUpdateView<T>(T model) 
+        /// <summary>
+        /// Passes the AuthorizedUpdateVisitor to the base view builder
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="model"></param>
+        /// <param name="viewVisitors"></param>
+        /// <returns></returns>
+        public UpdateView BuildUpdateView<T>(T model, params IUpdateViewVisitor[] viewVisitors) 
             where T : class, IIdentifiable, INameable
         {
-            return _baseBuilder.BuildUpdateView<T>(model);
+            return _baseBuilder.BuildUpdateView<T>(model, SetVisitors(viewVisitors));
         }
 
-        public UpdateView BuildUpdateView<T>(int? id) 
+        /// <summary>
+        /// Passes the AuthorizedUpdateVisitor to the base view builder
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <param name="viewVisitors"></param>
+        /// <returns></returns>
+        public UpdateView BuildUpdateView<T>(int? id, params IUpdateViewVisitor[] viewVisitors) 
             where T : class, IIdentifiable, INameable
         {
-            return _baseBuilder.BuildUpdateView<T>(id);
+            return _baseBuilder.BuildUpdateView<T>(id, SetVisitors(viewVisitors));
         }
 
+        /// <summary>
+        /// Calls base
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <param name="viewVisitors"></param>
+        /// <returns></returns>
         public DetailsView BuildDetailsView<T>(int id, params IDetailsViewVisitor[] viewVisitors)
             where T : class, IIdentifiable, INameable
         {
             return _baseBuilder.BuildDetailsView<T>(id, viewVisitors);
         }
 
+        /// <summary>
+        /// Passes the AuthorizedFilterOptionsVisitor to the base view builder
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="filterOptionVisitors"></param>
+        /// <returns></returns>
         public IEnumerable<FilterOption> GetIndexFilterOptions<T>(params IFilterOptionVisitor[] filterOptionVisitors) 
             where T : class, IIdentifiable
         {
@@ -106,6 +143,18 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
             }).ToArray();
 
             return _baseBuilder.GetIndexFilterOptions<T>(visitors);
+        }
+
+        private IUpdateViewVisitor[] SetVisitors(params IUpdateViewVisitor[] viewVisitors)
+        {
+            var visitors = viewVisitors ?? new IUpdateViewVisitor[0];
+
+            visitors = visitors.Concat(new IUpdateViewVisitor[] 
+            { 
+                new AuthorizedUpdateVisitor<TUser, TKey>(_userStore)
+            }).ToArray();
+
+            return visitors;
         }
     }
 }

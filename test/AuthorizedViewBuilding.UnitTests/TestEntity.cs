@@ -12,6 +12,8 @@ using Psns.Common.Mvc.ViewBuilding.Authorized.Attributes;
 
 using System.Security.Permissions;
 
+using System.ComponentModel.DataAnnotations;
+
 namespace AuthorizedViewBuilding.UnitTests
 {
     [CrudAuthorize(AccessType.Create, "roleName")]
@@ -19,6 +21,16 @@ namespace AuthorizedViewBuilding.UnitTests
     {
         public int Id       { get; set; }
         public string Name  { get; set; }
+
+        [CrudAuthorize(AccessType.Update, "Updater")]
+        public string ProtectedProperty { get; set; }
+
+        [CrudAuthorize(AccessType.Create, "Updated")]
+        public int UnsupportedProtectedProperty { get; set; }
+
+        [Display(Name = "Labeled Protected Property")]
+        [CrudAuthorize(AccessType.Update, "Updater")]
+        public string LabeledProtectedProperty { get; set; }
 
         public bool Demand(User user, AccessType accessType)
         {

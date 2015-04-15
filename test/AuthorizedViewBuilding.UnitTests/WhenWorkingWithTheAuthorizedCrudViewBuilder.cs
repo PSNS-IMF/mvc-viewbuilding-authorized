@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Psns.Common.Test.BehaviorDrivenDevelopment;
 using Psns.Common.Mvc.ViewBuilding.Authorized;
+using Psns.Common.Mvc.ViewBuilding.Authorized.Visitors;
 using Psns.Common.Mvc.ViewBuilding.ViewBuilders;
 using Psns.Common.Mvc.ViewBuilding.ViewModels;
 
@@ -79,7 +80,8 @@ namespace AuthorizedViewBuilding.UnitTests.BuilderTests
         [TestMethod]
         public void ThenTheBaseBuilderBuildUpdateViewShouldBeCalledOnce()
         {
-            MockBaseBuilder.Verify(b => b.BuildUpdateView<TestEntity>(1), Times.Once());
+            MockBaseBuilder.Verify(b => b.BuildUpdateView<TestEntity>(1,
+                It.Is<IUpdateViewVisitor[]>(array => array[0] is AuthorizedUpdateVisitor<User, int>)), Times.Once());
         }
     }
 
@@ -96,7 +98,8 @@ namespace AuthorizedViewBuilding.UnitTests.BuilderTests
         [TestMethod]
         public void ThenTheBaseBuilderBuildUpdateViewShouldBeCalledOnce()
         {
-            MockBaseBuilder.Verify(b => b.BuildUpdateView<TestEntity>(It.Is<TestEntity>(e => e.Id == 1)), Times.Once());
+            MockBaseBuilder.Verify(b => b.BuildUpdateView<TestEntity>(It.Is<TestEntity>(e => e.Id == 1),
+                It.Is<IUpdateViewVisitor[]>(array => array[0] is AuthorizedUpdateVisitor<User, int>)), Times.Once());
         }
     }
 

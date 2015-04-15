@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Psns.Common.Mvc.ViewBuilding.Authorized
 {
+    /// <summary>
+    /// Represents access types that can be specified
+    /// </summary>
     public enum AccessType
     {
         Create,

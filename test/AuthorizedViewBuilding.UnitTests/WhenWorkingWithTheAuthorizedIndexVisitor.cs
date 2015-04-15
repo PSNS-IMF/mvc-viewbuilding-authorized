@@ -2,6 +2,7 @@
 
 using Psns.Common.Test.BehaviorDrivenDevelopment;
 using Psns.Common.Mvc.ViewBuilding.Authorized;
+using Psns.Common.Mvc.ViewBuilding.Authorized.Visitors;
 using Psns.Common.Mvc.ViewBuilding.ViewModels;
 using Psns.Common.Mvc.ViewBuilding.ViewModels.TableModel;
 
