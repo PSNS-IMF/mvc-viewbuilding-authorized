@@ -45,7 +45,8 @@ namespace AuthorizedViewBuilding.UnitTests.BuilderTests
         [TestMethod]
         public void ThenTheBaseBuilderBuildDetailsViewShouldBeCalledOnce()
         {
-            MockBaseBuilder.Verify(b => b.BuildDetailsView<TestEntity>(1, null), Times.Once());
+            MockBaseBuilder.Verify(b => b.BuildDetailsView<TestEntity>(1,
+                It.Is<IDetailsViewVisitor[]>(array => array[0] is AuthorizedDetailsVisitor<User, int>)), Times.Once());
         }
     }
 

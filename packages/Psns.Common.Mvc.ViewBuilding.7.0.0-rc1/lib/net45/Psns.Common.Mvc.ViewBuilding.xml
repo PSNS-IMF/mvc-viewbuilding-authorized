@@ -267,11 +267,6 @@
             <param name="item">The item to visit</param>
             <returns>Returns a potentially modified version of item</returns>
         </member>
-        <member name="P:Psns.Common.Mvc.ViewBuilding.ViewModels.IVisitable.Source">
-            <summary>
-            The object from which the element was built
-            </summary>
-        </member>
         <member name="T:Psns.Common.Mvc.ViewBuilding.ViewModels.DetailsView">
             <summary>
             A View with a Table that is used for a typical details view page

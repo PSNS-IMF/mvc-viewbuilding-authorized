@@ -22,6 +22,8 @@ namespace AuthorizedViewBuilding.UnitTests
         public int Id       { get; set; }
         public string Name  { get; set; }
 
+        public const string AuthKey = "Authorized";
+
         [CrudAuthorize(AccessType.Update, "Updater")]
         public string ProtectedProperty { get; set; }
 
@@ -32,12 +34,13 @@ namespace AuthorizedViewBuilding.UnitTests
         [CrudAuthorize(AccessType.Update, "Updater")]
         public string LabeledProtectedProperty { get; set; }
 
+        [CrudAuthorize(AccessType.Read, "Readers")]
+        [CrudAuthorize(AccessType.Update, "Updater")]
+        public string RestrictedReadProperty { get; set; }
+
         public bool Demand(User user, AccessType accessType)
         {
-            if(accessType == AccessType.Read)
-                return this.Name.Equals("Authorized");
-            else
-                return false;
+            return this.Name.Equals(AuthKey);
         }
     }
 }

@@ -20,12 +20,10 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized.Visitors
         where TKey : IEquatable<TKey>
     {
         ICrudUserStore<TUser, TKey> _userStore;
-        UserManager<TUser, TKey> _userManager;
 
         public AuthorizedUpdateVisitor(ICrudUserStore<TUser, TKey> userStore)
         {
             _userStore = userStore;
-            _userManager = new UserManager<TUser, TKey>(_userStore);
         }
 
         /// <summary>
@@ -53,21 +51,8 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized.Visitors
                 }
             }
 
-            var authorizeAttribute = (propertyInfo.GetCustomAttributes(typeof(CrudAuthorizeAttribute), false) 
-                as CrudAuthorizeAttribute[])
-                .Where(attribute => attribute.AccessType == AccessType.Update)
-                .SingleOrDefault();
-
-            if(authorizeAttribute != null)
-            {
-                foreach(var roleName in authorizeAttribute.RoleNames)
-                {
-                    if(_userManager.IsInRole(_userStore.CurrentUser.Id, roleName))
-                        return inputProperty;
-                }
-
+            if(!propertyInfo.CurrentUserHasAccess(AccessType.Update, _userStore))
                 return null;
-            }
 
             return inputProperty;
         }

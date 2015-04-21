@@ -24,17 +24,15 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized.Visitors
         where TKey : IEquatable<TKey>
     {
         ICrudUserStore<TUser, TKey> _userStore;
-        UserManager<TUser, TKey> _userManager;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="userStore"></param>
         /// <param name="userManager"></param>
-        public AuthorizedIndexVisitor(ICrudUserStore<TUser, TKey> userStore, UserManager<TUser, TKey> userManager)
+        public AuthorizedIndexVisitor(ICrudUserStore<TUser, TKey> userStore)
         {
             _userStore = userStore;
-            _userManager = userManager;
         }
 
         /// <summary>
@@ -49,10 +47,13 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized.Visitors
 
             if(authorizeAttribute != null)
             {
-                foreach(var roleName in authorizeAttribute.RoleNames)
+                using(var userManager = new UserManager<TUser, TKey>(_userStore))
                 {
-                    if(_userManager.IsInRole(_userStore.CurrentUser.Id, roleName))
-                        return;
+                    foreach(var roleName in authorizeAttribute.RoleNames)
+                    {
+                        if(userManager.IsInRole(_userStore.CurrentUser.Id, roleName))
+                            return;
+                    }
                 }
             }
 
@@ -83,13 +84,7 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized.Visitors
         /// <param name="table"></param>
         public void Visit(Table table)
         {
-            for(int i = 0; i < table.Rows.Count; i++)
-            {
-                var row = table.Rows[i];
-
-                if(row.Source.PermissionDenied(_userStore, AccessType.Read))
-                    table.Rows.Remove(row);
-            }
+            this.AuthorizeRows(_userStore, table);
         }
     }
 }

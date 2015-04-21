@@ -37,14 +37,11 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
     {
         ICrudViewBuilder _baseBuilder;
         ICrudUserStore<TUser, TKey> _userStore;
-        UserManager<TUser, TKey> _userManager;
 
         public AuthorizedCrudViewBuilder(ICrudViewBuilder baseBuilder, ICrudUserStore<TUser, TKey> userStore)
         {
             _baseBuilder = baseBuilder;
-
             _userStore = userStore;
-            _userManager = new UserManager<TUser, TKey>(_userStore);
         }
 
         /// <summary>
@@ -74,7 +71,7 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
 
             visitors = visitors.Concat(new IIndexViewVisitor[] 
             { 
-                new AuthorizedIndexVisitor<TUser, TKey, T>(_userStore, _userManager) 
+                new AuthorizedIndexVisitor<TUser, TKey, T>(_userStore) 
             }).ToArray();
 
             return _baseBuilder.BuildIndexView<T>(page, 
@@ -114,7 +111,7 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
         }
 
         /// <summary>
-        /// Calls base
+        /// Passes the AuthorizedDetailsVisitor to the base view builder
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="id"></param>
@@ -123,7 +120,14 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
         public DetailsView BuildDetailsView<T>(int id, params IDetailsViewVisitor[] viewVisitors)
             where T : class, IIdentifiable, INameable
         {
-            return _baseBuilder.BuildDetailsView<T>(id, viewVisitors);
+            var visitors = viewVisitors ?? new IDetailsViewVisitor[0];
+
+            visitors = visitors.Concat(new IDetailsViewVisitor[] 
+            { 
+                new AuthorizedDetailsVisitor<TUser, TKey>(_userStore)
+            }).ToArray();
+
+            return _baseBuilder.BuildDetailsView<T>(id, visitors);
         }
 
         /// <summary>

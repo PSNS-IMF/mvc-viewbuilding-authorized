@@ -311,11 +311,6 @@
             Represents the Create New Item button on the Index View
             </summary>
         </member>
-        <member name="P:Psns.Common.Mvc.ViewBuilding.ViewModels.IVisitable.Source">
-            <summary>
-            The object from which the element was built
-            </summary>
-        </member>
         <member name="T:Psns.Common.Mvc.ViewBuilding.Menu.GlobalMenu">
             <summary>
             Provides top-level menu content to be rendered in PSNSLayout
