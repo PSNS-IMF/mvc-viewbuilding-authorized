@@ -4,6 +4,9 @@ using Psns.Common.Test.BehaviorDrivenDevelopment;
 using Psns.Common.Mvc.ViewBuilding.Authorized;
 using Psns.Common.Mvc.ViewBuilding.Authorized.Visitors;
 
+using System.Reflection;
+using System.Threading.Tasks;
+
 using Moq;
 
 namespace AuthorizedViewBuilding.UnitTests.FilterOptionsVisitoTests
@@ -63,6 +66,60 @@ namespace AuthorizedViewBuilding.UnitTests.FilterOptionsVisitoTests
         public void ThenTheSubjectShouldBeNull()
         {
             Assert.IsNull(Subject);
+        }
+    }
+
+    [TestClass]
+    public class AndVisitingAPropertyOfAnItemWithoutReadAccess : WhenWorkingWithTheFilterOptionsVisitor
+    {
+        PropertyInfo _result;
+
+        public override void Arrange()
+        {
+            base.Arrange();
+
+            MockUserStore.Setup(s => s.FindByIdAsync(It.IsAny<int>())).Returns(Task.FromResult(new User { Id = 1 }));
+            MockUserStore.Setup(s => s.IsInRoleAsync(It.IsAny<User>(), It.IsAny<string>())).Returns(Task.FromResult(false));
+        }
+
+        public override void Act()
+        {
+            base.Act();
+
+            _result = Visitor.Visit(new TestEntity().GetType().GetProperty("RestrictedReadProperty"));
+        }
+
+        [TestMethod]
+        public void ThenNullShouldBeReturned()
+        {
+            Assert.IsNull(_result);
+        }
+    }
+
+    [TestClass]
+    public class AndVisitingAPropertyOfAnItemWithReadAccess : WhenWorkingWithTheFilterOptionsVisitor
+    {
+        PropertyInfo _result;
+
+        public override void Arrange()
+        {
+            base.Arrange();
+
+            MockUserStore.Setup(s => s.FindByIdAsync(It.IsAny<int>())).Returns(Task.FromResult(new User { Id = 1 }));
+            MockUserStore.Setup(s => s.IsInRoleAsync(It.IsAny<User>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+        }
+
+        public override void Act()
+        {
+            base.Act();
+
+            _result = Visitor.Visit(new TestEntity().GetType().GetProperty("RestrictedReadProperty"));
+        }
+
+        [TestMethod]
+        public void ThenTheOriginalPropertyShouldBeReturned()
+        {
+            Assert.AreEqual("RestrictedReadProperty", _result.Name);
         }
     }
 }

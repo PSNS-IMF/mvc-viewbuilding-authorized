@@ -4,10 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.Reflection;
+
 using Microsoft.AspNet.Identity;
 
 using Psns.Common.Mvc.ViewBuilding.ViewModels;
 using Psns.Common.Persistence.Definitions;
+
+using Psns.Common.Mvc.ViewBuilding.Authorized.Attributes;
 
 namespace Psns.Common.Mvc.ViewBuilding.Authorized.Visitors
 {
@@ -43,6 +47,19 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized.Visitors
                 return null;
             else
                 return item;
+        }
+
+        /// <summary>
+        /// Returns null if the property is decorated with CrudAuthorizedAttribute and user is not in Read role.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public PropertyInfo Visit(PropertyInfo property)
+        {
+            if(property.CurrentUserHasAccess(AccessType.Read, _userStore))
+                return property;
+            else
+                return null;
         }
     }
 }

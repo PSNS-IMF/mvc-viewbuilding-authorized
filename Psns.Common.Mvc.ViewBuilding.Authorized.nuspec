@@ -13,6 +13,7 @@
       ## 3.0.3.0
       ### Features
       * Implemented AuthorizedDetailsVisitor to provide field-level permission checking on the DetailsView model.
+      * Implemented AuthorizedFilterOptionsVisitor Visit for PropertyInfo to check for Read permissions on entity properties.
 
       ## 3.0.2.0
       ### Features
@@ -38,7 +39,7 @@
     <tags>PSNS mvc4 mvc5 asp.net mvc AspNetMvc model automation crud views viewbuilding authorization</tags>
     <dependencies>
       <dependency id="Microsoft.AspNet.Identity.Core" version="2.2.0" />
-      <dependency id="Psns.Common.Mvc.ViewBuilding" version="7.0.0" />
+      <dependency id="Psns.Common.Mvc.ViewBuilding" version="8.0.0" />
     </dependencies>
   </metadata>
   <files>
