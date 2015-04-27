@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using System.Web.Mvc;
 
 using Psns.Common.Mvc.ViewBuilding.Controllers;
 using Psns.Common.Mvc.ViewBuilding.Entities;
 using Psns.Common.Persistence.Definitions;
+
+using Psns.Common.Mvc.ViewBuilding.Authorized.Attributes;
 
 using Microsoft.AspNet.Identity;
 
@@ -23,7 +23,38 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
         where TUser : class, IUser<TUserKey>
         where TUserKey : IEquatable<TUserKey>
     {
-        public AuthorizedCrudController(IAuthorizedCrudViewBuilder<TUser, TUserKey> viewBuilder, IRepositoryFactory factory)
-            : base(viewBuilder, factory) { }
+        ICrudUserStore<TUser, TUserKey> _userStore;
+
+        public AuthorizedCrudController(IAuthorizedCrudViewBuilder<TUser, TUserKey> viewBuilder,
+            ICrudUserStore<TUser, TUserKey> userStore,
+            IRepositoryFactory factory)
+            : base(viewBuilder, factory) 
+        {
+            _userStore = userStore;
+        }
+
+        public override ActionResult Index()
+        {
+            if(!typeof(TEntity).CurrentUserHasAccess(AccessType.Read, _userStore))
+                return this.UnauthorizedResult(AccessType.Read);
+            else
+                return base.Index();
+        }
+
+        public override ActionResult Update(int? id)
+        {
+            if(!typeof(TEntity).CurrentUserHasAccess(AccessType.Create, _userStore))
+                return this.UnauthorizedResult(AccessType.Create);
+            else
+                return base.Update(id);
+        }
+
+        public override ActionResult Update(TEntity model)
+        {
+            if(!typeof(TEntity).CurrentUserHasAccess(AccessType.Create, _userStore))
+                return this.UnauthorizedResult(AccessType.Create);
+            else
+                return base.Update(model);
+        }
     }
 }

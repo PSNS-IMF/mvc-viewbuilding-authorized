@@ -12,16 +12,16 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized.Attributes
 {
     public static class AuthorizeAttributeExtensions
     {
-        public static bool CurrentUserHasAccess<TUser, TKey>(this PropertyInfo propertyInfo,
+        public static bool CurrentUserHasAccess<TUser, TKey>(this MemberInfo memberInfo,
             AccessType accessType,
             ICrudUserStore<TUser, TKey> userStore)
             where TUser : class, IUser<TKey>
             where TKey : IEquatable<TKey>
         {
-            var authorizeAttribute = (propertyInfo.GetCustomAttributes(typeof(CrudAuthorizeAttribute), false) as
+            var authorizeAttribute = (memberInfo.GetCustomAttributes(typeof(CrudAuthorizeAttribute), false) as
                 CrudAuthorizeAttribute[])
-                    .Where(a => a.AccessType == accessType)
-                    .SingleOrDefault();
+               .Where(a => a.AccessType == accessType)
+               .SingleOrDefault();
 
             if(authorizeAttribute == null)
                 return true;

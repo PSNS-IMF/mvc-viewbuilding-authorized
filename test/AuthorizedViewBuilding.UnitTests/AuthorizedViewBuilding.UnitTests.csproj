@@ -126,6 +126,7 @@
   <ItemGroup>
     <Compile Include="TestEntity.cs" />
     <Compile Include="User.cs" />
+    <Compile Include="WhenWorkingWithTheAuthorizedCrudController.cs" />
     <Compile Include="WhenWorkingWithTheAuthorizedFilterOptionsVisitor.cs" />
     <Compile Include="WhenWorkingWithTheAuthorizedDetailsVisitor.cs" />
     <Compile Include="WhenWorkingWithTheAuthorizedIndexVisitor.cs" />

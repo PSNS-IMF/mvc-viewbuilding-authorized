@@ -112,6 +112,7 @@
     <Compile Include="Attributes\AuthorizeAttributeExtensions.cs" />
     <Compile Include="Attributes\CrudAuthorizeAttribute.cs" />
     <Compile Include="AuthorizedCrudController.cs" />
+    <Compile Include="AuthorizedCrudControllerExtensions.cs" />
     <Compile Include="AuthorizedCrudViewBuilder.cs" />
     <Compile Include="AccessType.cs" />
     <Compile Include="Visitors\AuthorizedDetailsVisitor.cs" />

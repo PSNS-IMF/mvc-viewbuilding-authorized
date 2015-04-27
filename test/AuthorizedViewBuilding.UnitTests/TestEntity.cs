@@ -9,6 +9,7 @@ using System.ComponentModel.DataAnnotations;
 namespace AuthorizedViewBuilding.UnitTests
 {
     [CrudAuthorize(AccessType.Create, "roleName")]
+    [CrudAuthorize(AccessType.Read, "Reader")]
     public  class TestEntity : IIdentifiable, INameable, ISecurable<User, int>
     {
         public int Id       { get; set; }
