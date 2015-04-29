@@ -43,16 +43,20 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
 
         public override ActionResult Update(int? id)
         {
-            if(!typeof(TEntity).CurrentUserHasAccess(AccessType.Create, _userStore))
+            if(!id.HasValue && !typeof(TEntity).CurrentUserHasAccess(AccessType.Create, _userStore))
                 return this.UnauthorizedResult(AccessType.Create);
+            else if(!typeof(TEntity).CurrentUserHasAccess(AccessType.Update, _userStore))
+                return this.UnauthorizedResult(AccessType.Update);
             else
                 return base.Update(id);
         }
 
         public override ActionResult Update(TEntity model)
         {
-            if(!typeof(TEntity).CurrentUserHasAccess(AccessType.Create, _userStore))
+            if(this.IsCreate(model) && !typeof(TEntity).CurrentUserHasAccess(AccessType.Create, _userStore))
                 return this.UnauthorizedResult(AccessType.Create);
+            else if(!typeof(TEntity).CurrentUserHasAccess(AccessType.Update, _userStore))
+                return this.UnauthorizedResult(AccessType.Update);
             else
                 return base.Update(model);
         }

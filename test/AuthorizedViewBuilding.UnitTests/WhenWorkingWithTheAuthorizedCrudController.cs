@@ -22,6 +22,7 @@ namespace AuthorizedViewBuilding.UnitTests
         protected Mock<IAuthorizedCrudViewBuilder<User, int>> MockViewBuilder;
         protected Mock<ICrudUserStore<User, int>> MockUserStore;
         protected Mock<IRepositoryFactory> MockRepositoryFactory;
+        protected Mock<IRepository<TestEntity>> MockRepository;
 
         protected ActionResult Result;
 
@@ -32,6 +33,9 @@ namespace AuthorizedViewBuilding.UnitTests
             MockViewBuilder = new Mock<IAuthorizedCrudViewBuilder<User,int>>();
             MockUserStore = new Mock<ICrudUserStore<User, int>>();
             MockRepositoryFactory = new Mock<IRepositoryFactory>();
+            MockRepository = new Mock<IRepository<TestEntity>>();
+
+            MockRepositoryFactory.Setup(f => f.Get<TestEntity>()).Returns(MockRepository.Object);
 
             MockUserStore.Setup(store => store.CurrentUser).Returns(new User());
             MockUserStore.Setup(store => store.FindByIdAsync(It.IsAny<int>())).Returns(Task.FromResult(new User()));
@@ -95,13 +99,13 @@ namespace AuthorizedViewBuilding.UnitTests
 
     #region Update
     [TestClass]
-    public class AndAccessingUpdateIdAsAUserNotInACreatorRole : AndTheUserIsNotInTheRoles
+    public class AndAccessingUpdateIdGetAsAUserNotInACreatorRole : AndTheUserIsNotInTheRoles
     {
         public override void Arrange()
         {
             base.Arrange();
 
-            ControllerAction = () => Controller.Update(0);
+            ControllerAction = () => Controller.Update(id: null);
         }
 
         [TestMethod]
@@ -112,13 +116,30 @@ namespace AuthorizedViewBuilding.UnitTests
     }
 
     [TestClass]
-    public class AndAccessingUpdateIdAsAUserInACreatorRole : AndTheUserIsInTheRoles
+    public class AndAccessingUpdateIdGetAsAUserNotInAnUpdaterRole : AndTheUserIsNotInTheRoles
     {
         public override void Arrange()
         {
             base.Arrange();
 
-            ControllerAction = () => Controller.Update(0);
+            ControllerAction = () => Controller.Update(1);
+        }
+
+        [TestMethod]
+        public void ThenUnAuthorizedShouldBeReturned()
+        {
+            AssertCommon(AccessType.Update, typeof(TestEntity).Name);
+        }
+    }
+
+    [TestClass]
+    public class AndAccessingUpdateIdGetAsAUserInACreatorRole : AndTheUserIsInTheRoles
+    {
+        public override void Arrange()
+        {
+            base.Arrange();
+
+            ControllerAction = () => Controller.Update(id: null);
         }
 
         [TestMethod]
@@ -129,7 +150,24 @@ namespace AuthorizedViewBuilding.UnitTests
     }
 
     [TestClass]
-    public class AndAccessingUpdateModelAsAUserNotInACreatorRole : AndTheUserIsNotInTheRoles
+    public class AndAccessingUpdateIdGetAsAUserInAnUpdaterRole : AndTheUserIsInTheRoles
+    {
+        public override void Arrange()
+        {
+            base.Arrange();
+
+            ControllerAction = () => Controller.Update(1);
+        }
+
+        [TestMethod]
+        public void ThenAViewResultShouldBeReturned()
+        {
+            Assert.IsNotNull((Result as ViewResult));
+        }
+    }
+
+    [TestClass]
+    public class AndAccessingUpdateModelPostAsAUserNotInACreatorRole : AndTheUserIsNotInTheRoles
     {
         public override void Arrange()
         {
@@ -146,7 +184,24 @@ namespace AuthorizedViewBuilding.UnitTests
     }
 
     [TestClass]
-    public class AndAccessingUpdateModelAsAUserInACreatorRole : AndTheUserIsInTheRoles
+    public class AndAccessingUpdateModelPostAsAUserNotInAnUpdaterRole : AndTheUserIsNotInTheRoles
+    {
+        public override void Arrange()
+        {
+            base.Arrange();
+
+            ControllerAction = () => Controller.Update(new TestEntity { Id = 1 });
+        }
+
+        [TestMethod]
+        public void ThenUnAuthorizedShouldBeReturned()
+        {
+            AssertCommon(AccessType.Update, typeof(TestEntity).Name);
+        }
+    }
+
+    [TestClass]
+    public class AndAccessingUpdateModelPostAsAUserInACreatorRole : AndTheUserIsInTheRoles
     {
         bool _validateCalled;
 
@@ -158,18 +213,41 @@ namespace AuthorizedViewBuilding.UnitTests
 
             MockViewBuilder.Setup(b => b.BuildUpdateView<TestEntity>(It.IsAny<TestEntity>())).Returns(new UpdateView());
 
-            var mockRepository = new Mock<IRepository<TestEntity>>();
-            mockRepository.Setup(r => r.Update(It.IsAny<TestEntity>(), It.IsAny<string[]>())).Returns(new TestEntity());
+            MockRepository.Setup(r => r.Create(It.IsAny<TestEntity>())).Returns(new TestEntity());
 
-            MockRepositoryFactory.Setup(f => f.Get<TestEntity>()).Returns(mockRepository.Object);
+            ControllerAction = () => Controller.Update(new TestEntity());
+        }
+
+        [TestMethod]
+        public void ThenARedirectToRouteResultShouldBeReturned()
+        {
+            Assert.IsNotNull((Result as RedirectToRouteResult));
+            Assert.IsTrue(_validateCalled);
+        }
+    }
+
+    [TestClass]
+    public class AndAccessingUpdateModelPostAsAUserInAnUpdaterRole : AndTheUserIsInTheRoles
+    {
+        bool _validateCalled;
+
+        public override void Arrange()
+        {
+            base.Arrange();
+
+            AntiForgeryHelperAdapter.ValidationFunction = () => _validateCalled = true;
+
+            MockViewBuilder.Setup(b => b.BuildUpdateView<TestEntity>(It.IsAny<TestEntity>())).Returns(new UpdateView());
+
+            MockRepository.Setup(r => r.Update(It.IsAny<TestEntity>(), It.IsAny<string[]>())).Returns(new TestEntity());
 
             ControllerAction = () => Controller.Update(new TestEntity { Id = 1 });
         }
 
         [TestMethod]
-        public void ThenAViewResultShouldBeReturned()
+        public void ThenARedirectToRouteResultShouldBeReturned()
         {
-            Assert.IsNotNull((Result as ViewResult));
+            Assert.IsNotNull((Result as RedirectToRouteResult));
             Assert.IsTrue(_validateCalled);
         }
     }
