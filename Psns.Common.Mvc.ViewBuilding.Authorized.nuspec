@@ -39,7 +39,7 @@
     <tags>PSNS mvc4 mvc5 asp.net mvc AspNetMvc model automation crud views viewbuilding authorization</tags>
     <dependencies>
       <dependency id="Microsoft.AspNet.Identity.Core" version="2.2.0" />
-      <dependency id="Psns.Common.Mvc.ViewBuilding" version="6.0.0" />
+      <dependency id="Psns.Common.Mvc.ViewBuilding" version="7.0.0" />
     </dependencies>
   </metadata>
   <files>

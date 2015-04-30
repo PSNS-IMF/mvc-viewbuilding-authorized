@@ -196,7 +196,7 @@ namespace AuthorizedViewBuilding.UnitTests
         [TestMethod]
         public void ThenAViewResultShouldBeReturned()
         {
-            Assert.IsInstanceOfType(Result, typeof(RedirectToRouteResult));
+            Assert.IsInstanceOfType(Result, typeof(ViewResult));
         }
     }
 
@@ -223,8 +223,6 @@ namespace AuthorizedViewBuilding.UnitTests
         public override void Arrange()
         {
             base.Arrange();
-
-            AntiForgeryHelperAdapter.ValidationFunction = () => { return; };
 
             ControllerAction = () => Controller.Update(new TestEntity { Name = "Unauthorized" });
         }

@@ -71,7 +71,7 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
                 else if(entity.PermissionDenied(_userStore, AccessType.Update))
                     return this.UnauthorizedResult(AccessType.Update, entity.Name);
                 else
-                    return base.Update(entity);
+                    return this.Update<TEntity>(entity, HttpVerbs.Get);
             }
         }
 
