@@ -126,23 +126,6 @@ namespace AuthorizedViewBuilding.UnitTests
     }
 
     [TestClass]
-    public class AndAccessingUpdateIdForISecurableAsAUserInACreatorRole : ButDemandDenies
-    {
-        public override void Arrange()
-        {
-            base.Arrange();
-
-            ControllerAction = () => Controller.Update(id: null);
-        }
-
-        [TestMethod]
-        public void ThenUnAuthorizedShouldBeReturned()
-        {
-            AssertUnauthorized(AccessType.Create, "Unauthorized");
-        }
-    }
-
-    [TestClass]
     public class AndAccessingUpdateIdGetAsAUserNotInAnUpdaterRole : AndTheUserIsNotInTheRoles
     {
         public override void Arrange()
@@ -200,13 +183,20 @@ namespace AuthorizedViewBuilding.UnitTests
         {
             base.Arrange();
 
+            AntiForgeryHelperAdapter.ValidationFunction = () => { return; };
+
+            MockRepository.Setup(r => r.Find(It.IsAny<object[]>())).Returns(new TestEntity { Id = 1, Name = TestEntity.AuthKey });
+
+            MockRepository.Setup(r => r.Update(It.IsAny<TestEntity>(), It.IsAny<string[]>()))
+                .Returns(new TestEntity { Id = 1, Name = TestEntity.AuthKey });
+
             ControllerAction = () => Controller.Update(1);
         }
 
         [TestMethod]
         public void ThenAViewResultShouldBeReturned()
         {
-            Assert.IsNotNull((Result as ViewResult));
+            Assert.IsInstanceOfType(Result, typeof(RedirectToRouteResult));
         }
     }
 
@@ -224,6 +214,25 @@ namespace AuthorizedViewBuilding.UnitTests
         public void ThenUnAuthorizedShouldBeReturned()
         {
             AssertUnauthorized(AccessType.Create, typeof(TestEntity).Name);
+        }
+    }
+
+    [TestClass]
+    public class AndAccessingUpdateModelPostForISecurableAsAUserInACreatorRole : ButDemandDenies
+    {
+        public override void Arrange()
+        {
+            base.Arrange();
+
+            AntiForgeryHelperAdapter.ValidationFunction = () => { return; };
+
+            ControllerAction = () => Controller.Update(new TestEntity { Name = "Unauthorized" });
+        }
+
+        [TestMethod]
+        public void ThenUnAuthorizedShouldBeReturned()
+        {
+            AssertUnauthorized(AccessType.Create, "Unauthorized");
         }
     }
 

@@ -94,7 +94,7 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
         public UpdateView BuildUpdateView<T>(T model, params IUpdateViewVisitor[] viewVisitors) 
             where T : class, IIdentifiable, INameable
         {
-            return _baseBuilder.BuildUpdateView<T>(model, SetVisitors(viewVisitors));
+            return _baseBuilder.BuildUpdateView<T>(model, SetUpdateVisitors(viewVisitors));
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
         public UpdateView BuildUpdateView<T>(int? id, params IUpdateViewVisitor[] viewVisitors) 
             where T : class, IIdentifiable, INameable
         {
-            return _baseBuilder.BuildUpdateView<T>(id, SetVisitors(viewVisitors));
+            return _baseBuilder.BuildUpdateView<T>(id, SetUpdateVisitors(viewVisitors));
         }
 
         /// <summary>
@@ -120,14 +120,20 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
         public DetailsView BuildDetailsView<T>(int id, params IDetailsViewVisitor[] viewVisitors)
             where T : class, IIdentifiable, INameable
         {
-            var visitors = viewVisitors ?? new IDetailsViewVisitor[0];
+            return _baseBuilder.BuildDetailsView<T>(id, SetDetailsVisitors(viewVisitors));
+        }
 
-            visitors = visitors.Concat(new IDetailsViewVisitor[] 
-            { 
-                new AuthorizedDetailsVisitor<TUser, TKey>(_userStore)
-            }).ToArray();
-
-            return _baseBuilder.BuildDetailsView<T>(id, visitors);
+        /// <summary>
+        /// Passes the AuthorizedDetailsVisitor to the base view builder
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <param name="viewVisitors"></param>
+        /// <returns></returns>
+        public DetailsView BuildDetailsView<T>(T model, params IDetailsViewVisitor[] viewVisitors)
+            where T : class, IIdentifiable, INameable
+        {
+            return _baseBuilder.BuildDetailsView<T>(model, SetDetailsVisitors(viewVisitors));
         }
 
         /// <summary>
@@ -149,7 +155,19 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
             return _baseBuilder.GetIndexFilterOptions<T>(visitors);
         }
 
-        private IUpdateViewVisitor[] SetVisitors(params IUpdateViewVisitor[] viewVisitors)
+        private IDetailsViewVisitor[] SetDetailsVisitors(params IDetailsViewVisitor[] viewVisitors)
+        {
+            var visitors = viewVisitors ?? new IDetailsViewVisitor[0];
+
+            visitors = visitors.Concat(new IDetailsViewVisitor[] 
+            { 
+                new AuthorizedDetailsVisitor<TUser, TKey>(_userStore)
+            }).ToArray();
+
+            return visitors;
+        }
+
+        private IUpdateViewVisitor[] SetUpdateVisitors(params IUpdateViewVisitor[] viewVisitors)
         {
             var visitors = viewVisitors ?? new IUpdateViewVisitor[0];
 

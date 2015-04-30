@@ -50,28 +50,29 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
             else if(entity.PermissionDenied(_userStore, AccessType.Read))
                 return this.UnauthorizedResult(AccessType.Read, entity.Name);
             else
-                return base.Details(id);
+                return base.Details(entity);
         }
 
         public override ActionResult Update(int? id)
         {
-            var entity = Repository.Find(id);
-
             if(!id.HasValue)
             {
                 if(!typeof(TEntity).CurrentUserHasAccess(AccessType.Create, _userStore))
                     return this.UnauthorizedResult(AccessType.Create);
-                else if(entity.PermissionDenied(_userStore, AccessType.Create))
-                    return this.UnauthorizedResult(AccessType.Create, entity.Name);
                 else
                     return base.Update(id);
             }
-            else if(!typeof(TEntity).CurrentUserHasAccess(AccessType.Update, _userStore))
-                return this.UnauthorizedResult(AccessType.Update);
-            else if(entity.PermissionDenied(_userStore, AccessType.Update))
-                return this.UnauthorizedResult(AccessType.Update, entity.Name);
             else
-                return base.Update(id);
+            {
+                var entity = Repository.Find(id);
+
+                if(!typeof(TEntity).CurrentUserHasAccess(AccessType.Update, _userStore))
+                    return this.UnauthorizedResult(AccessType.Update);
+                else if(entity.PermissionDenied(_userStore, AccessType.Update))
+                    return this.UnauthorizedResult(AccessType.Update, entity.Name);
+                else
+                    return base.Update(entity);
+            }
         }
 
         public override ActionResult Update(TEntity model)
@@ -102,7 +103,7 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
             else if(entity.PermissionDenied(_userStore, AccessType.Delete))
                 return this.UnauthorizedResult(AccessType.Delete, entity.Name);
             else
-                return base.Delete(id);
+                return base.Delete(entity);
         }
     }
 }
