@@ -11,6 +11,7 @@ namespace AuthorizedViewBuilding.UnitTests
     [CrudAuthorize(AccessType.Create, "roleName")]
     [CrudAuthorize(AccessType.Read, "Reader")]
     [CrudAuthorize(AccessType.Update, "Updater")]
+    [CrudAuthorize(AccessType.Delete, "Deleter")]
     public  class TestEntity : IIdentifiable, INameable, ISecurable<User, int>
     {
         public int Id       { get; set; }

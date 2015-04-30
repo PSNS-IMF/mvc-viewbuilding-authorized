@@ -15,12 +15,14 @@ namespace Psns.Common.Mvc.ViewBuilding.Authorized
     public static class AuthorizedCrudControllerExtensions
     {
         public static ActionResult UnauthorizedResult<TEntity, TUser, TUserKey>(this AuthorizedCrudController<TEntity, TUser, TUserKey> controller,
-            AccessType accessType)
+            AccessType accessType,
+            string resourceName = null)
             where TEntity : class, INameable, IIdentifiable
             where TUser : class, IUser<TUserKey>
             where TUserKey : IEquatable<TUserKey>
         {
-            return new HttpUnauthorizedResult(string.Format("You do not have {0} access to {1}", accessType, typeof(TEntity).Name));
+            return new HttpUnauthorizedResult(string.Format("You do not have {0} access to {1}", accessType, 
+                resourceName ?? typeof(TEntity).Name));
         }
     }
 }

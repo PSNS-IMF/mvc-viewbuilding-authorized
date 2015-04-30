@@ -44,6 +44,14 @@ namespace AuthorizedViewBuilding.UnitTests
                 MockUserStore.Object,
                 MockRepositoryFactory.Object);
         }
+
+        protected void AssertUnauthorized(AccessType accessType, string entityName)
+        {
+            var result = (Result as HttpUnauthorizedResult);
+
+            Assert.AreEqual(401, result.StatusCode);
+            Assert.AreEqual(string.Format("You do not have {0} access to {1}", accessType.ToString(), entityName), result.StatusDescription);
+        }
     }
 
     public class AndTheUserIsNotInTheRoles : WhenWorkingWithTheAuthorizedCrudController
@@ -62,14 +70,6 @@ namespace AuthorizedViewBuilding.UnitTests
             base.Act();
 
             Result = ControllerAction();
-        }
-
-        protected void AssertCommon(AccessType accessType, string entityName)
-        {
-            var result = (Result as HttpUnauthorizedResult);
-
-            Assert.AreEqual(401, result.StatusCode);
-            Assert.AreEqual(string.Format("You do not have {0} access to {1}", accessType.ToString(), entityName), result.StatusDescription);
         }
     }
 
@@ -93,7 +93,17 @@ namespace AuthorizedViewBuilding.UnitTests
 
         protected void AssertCommon()
         {
-            Assert.IsNotNull((Result as ViewResult));
+            Assert.IsInstanceOfType(Result, typeof(ViewResult));
+        }
+    }
+
+    public class ButDemandDenies : AndTheUserIsInTheRoles
+    {
+        public override void Arrange()
+        {
+            base.Arrange();
+
+            MockRepository.Setup(r => r.Find(It.IsAny<object[]>())).Returns(new TestEntity { Name = "Unauthorized" });
         }
     }
 
@@ -111,7 +121,24 @@ namespace AuthorizedViewBuilding.UnitTests
         [TestMethod]
         public void ThenUnAuthorizedShouldBeReturned()
         {
-            AssertCommon(AccessType.Create, typeof(TestEntity).Name);
+            AssertUnauthorized(AccessType.Create, typeof(TestEntity).Name);
+        }
+    }
+
+    [TestClass]
+    public class AndAccessingUpdateIdForISecurableAsAUserInACreatorRole : ButDemandDenies
+    {
+        public override void Arrange()
+        {
+            base.Arrange();
+
+            ControllerAction = () => Controller.Update(id: null);
+        }
+
+        [TestMethod]
+        public void ThenUnAuthorizedShouldBeReturned()
+        {
+            AssertUnauthorized(AccessType.Create, "Unauthorized");
         }
     }
 
@@ -128,7 +155,24 @@ namespace AuthorizedViewBuilding.UnitTests
         [TestMethod]
         public void ThenUnAuthorizedShouldBeReturned()
         {
-            AssertCommon(AccessType.Update, typeof(TestEntity).Name);
+            AssertUnauthorized(AccessType.Update, typeof(TestEntity).Name);
+        }
+    }
+
+    [TestClass]
+    public class AndAccessingUpdateIdForISecurableAsAUserInAUpdaterRole : ButDemandDenies
+    {
+        public override void Arrange()
+        {
+            base.Arrange();
+
+            ControllerAction = () => Controller.Update(1);
+        }
+
+        [TestMethod]
+        public void ThenUnAuthorizedShouldBeReturned()
+        {
+            AssertUnauthorized(AccessType.Update, "Unauthorized");
         }
     }
 
@@ -179,7 +223,7 @@ namespace AuthorizedViewBuilding.UnitTests
         [TestMethod]
         public void ThenUnAuthorizedShouldBeReturned()
         {
-            AssertCommon(AccessType.Create, typeof(TestEntity).Name);
+            AssertUnauthorized(AccessType.Create, typeof(TestEntity).Name);
         }
     }
 
@@ -196,59 +240,72 @@ namespace AuthorizedViewBuilding.UnitTests
         [TestMethod]
         public void ThenUnAuthorizedShouldBeReturned()
         {
-            AssertCommon(AccessType.Update, typeof(TestEntity).Name);
+            AssertUnauthorized(AccessType.Update, typeof(TestEntity).Name);
+        }
+    }
+
+    [TestClass]
+    public class AndAccessingUpdateModelPostForISecurableAsAUserInAUpdaterRole : ButDemandDenies
+    {
+        public override void Arrange()
+        {
+            base.Arrange();
+
+            AntiForgeryHelperAdapter.ValidationFunction = () => { return; };
+
+            ControllerAction = () => Controller.Update(new TestEntity { Id = 1, Name = "Unauthorized" });
+        }
+
+        [TestMethod]
+        public void ThenUnAuthorizedShouldBeReturned()
+        {
+            AssertUnauthorized(AccessType.Update, "Unauthorized");
         }
     }
 
     [TestClass]
     public class AndAccessingUpdateModelPostAsAUserInACreatorRole : AndTheUserIsInTheRoles
     {
-        bool _validateCalled;
-
         public override void Arrange()
         {
             base.Arrange();
 
-            AntiForgeryHelperAdapter.ValidationFunction = () => _validateCalled = true;
+            AntiForgeryHelperAdapter.ValidationFunction = () => { return; };
 
             MockViewBuilder.Setup(b => b.BuildUpdateView<TestEntity>(It.IsAny<TestEntity>())).Returns(new UpdateView());
 
             MockRepository.Setup(r => r.Create(It.IsAny<TestEntity>())).Returns(new TestEntity());
 
-            ControllerAction = () => Controller.Update(new TestEntity());
+            ControllerAction = () => Controller.Update(new TestEntity { Name = TestEntity.AuthKey });
         }
 
         [TestMethod]
         public void ThenARedirectToRouteResultShouldBeReturned()
         {
             Assert.IsNotNull((Result as RedirectToRouteResult));
-            Assert.IsTrue(_validateCalled);
         }
     }
 
     [TestClass]
     public class AndAccessingUpdateModelPostAsAUserInAnUpdaterRole : AndTheUserIsInTheRoles
     {
-        bool _validateCalled;
-
         public override void Arrange()
         {
             base.Arrange();
 
-            AntiForgeryHelperAdapter.ValidationFunction = () => _validateCalled = true;
+            AntiForgeryHelperAdapter.ValidationFunction = () => { return; };
 
             MockViewBuilder.Setup(b => b.BuildUpdateView<TestEntity>(It.IsAny<TestEntity>())).Returns(new UpdateView());
 
             MockRepository.Setup(r => r.Update(It.IsAny<TestEntity>(), It.IsAny<string[]>())).Returns(new TestEntity());
 
-            ControllerAction = () => Controller.Update(new TestEntity { Id = 1 });
+            ControllerAction = () => Controller.Update(new TestEntity { Id = 1, Name = TestEntity.AuthKey });
         }
 
         [TestMethod]
         public void ThenARedirectToRouteResultShouldBeReturned()
         {
             Assert.IsNotNull((Result as RedirectToRouteResult));
-            Assert.IsTrue(_validateCalled);
         }
     }
     #endregion
@@ -267,7 +324,7 @@ namespace AuthorizedViewBuilding.UnitTests
         [TestMethod]
         public void ThenUnAuthorizedShouldBeReturned()
         {
-            AssertCommon(AccessType.Read, typeof(TestEntity).Name);
+            AssertUnauthorized(AccessType.Read, typeof(TestEntity).Name);
         }
     }
 
@@ -287,5 +344,118 @@ namespace AuthorizedViewBuilding.UnitTests
             AssertCommon();
         }
     }
+
+    [TestClass]
+    public class AndAccessingDetailsAsAUserNotInAReaderRole : AndTheUserIsNotInTheRoles
+    {
+        public override void Arrange()
+        {
+            base.Arrange();
+
+            ControllerAction = () => Controller.Details(1);
+        }
+
+        [TestMethod]
+        public void ThenUnAuthorizedShouldBeReturned()
+        {
+            AssertUnauthorized(AccessType.Read, typeof(TestEntity).Name);
+        }
+    }
+
+    [TestClass]
+    public class AndAccessingDetailsForISecurableAsAUserInAReaderRole : ButDemandDenies
+    {
+        public override void Arrange()
+        {
+            base.Arrange();
+
+            ControllerAction = () => Controller.Details(1);
+        }
+
+        [TestMethod]
+        public void ThenUnAuthorizedShouldBeReturned()
+        {
+            AssertUnauthorized(AccessType.Read, "Unauthorized");
+        }
+    }
+
+    [TestClass]
+    public class AndAccessingDetailsAsAUserInAReaderRole : AndTheUserIsInTheRoles
+    {
+        public override void Arrange()
+        {
+            base.Arrange();
+
+            ControllerAction = () => Controller.Details(1);
+        }
+
+        [TestMethod]
+        public void ThenAViewResultShouldBeReturned()
+        {
+            AssertCommon();
+        }
+    }
+
+    #endregion
+
+    #region Delete
+
+    [TestClass]
+    public class AndAccessingDeleteAsAUserNotInADeleterRole : AndTheUserIsNotInTheRoles
+    {
+        public override void Arrange()
+        {
+            base.Arrange();
+
+            AntiForgeryHelperAdapter.ValidationFunction = () => { return; };
+
+            ControllerAction = () => Controller.Delete(1);
+        }
+
+        [TestMethod]
+        public void ThenUnAuthorizedShouldBeReturned()
+        {
+            AssertUnauthorized(AccessType.Delete, typeof(TestEntity).Name);
+        }
+    }
+
+    [TestClass]
+    public class AndAccessingDeleteAsAUserInADeleterRole : AndTheUserIsInTheRoles
+    {
+        public override void Arrange()
+        {
+            base.Arrange();
+
+            AntiForgeryHelperAdapter.ValidationFunction = () => { return; };
+
+            ControllerAction = () => Controller.Delete(1);
+        }
+
+        [TestMethod]
+        public void ThenAViewResultShouldBeReturned()
+        {
+            Assert.IsInstanceOfType(Result, typeof(RedirectToRouteResult));
+        }
+    }
+
+    [TestClass]
+    public class AndAccessingDeleteForISecurableAsAUserInAReaderRole : ButDemandDenies
+    {
+        public override void Arrange()
+        {
+            base.Arrange();
+
+            AntiForgeryHelperAdapter.ValidationFunction = () => { return; };
+
+            ControllerAction = () => Controller.Delete(1);
+        }
+
+        [TestMethod]
+        public void ThenUnAuthorizedShouldBeReturned()
+        {
+            AssertUnauthorized(AccessType.Delete, "Unauthorized");
+        }
+    }
+
     #endregion
 }
